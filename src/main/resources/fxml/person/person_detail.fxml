@@ -12,49 +12,60 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.playground.fondoahorro.presentation.person.controller.PersonDetailController"
-      spacing="16">
-    <HBox spacing="12" alignment="CENTER_LEFT">
-        <Button text="← Volver" onAction="#handleBack" styleClass="secondary-button"/>
+      spacing="12"
+      styleClass="application-page person-detail-page">
+    <HBox alignment="CENTER_LEFT">
+        <Button text="← Personas" onAction="#handleBack" styleClass="person-back-button"/>
     </HBox>
-    <HBox spacing="16" alignment="CENTER_LEFT">
-        <Label fx:id="nameLabel" styleClass="page-title"/>
-        <Label fx:id="statusLabel" style="-fx-font-weight: bold;"/>
+
+    <HBox alignment="CENTER_LEFT" spacing="14" styleClass="person-profile-card">
+        <Label fx:id="personInitialsLabel" styleClass="person-profile-avatar"/>
+        <VBox spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <Label fx:id="nameLabel" styleClass="page-title"/>
+                <Label fx:id="statusLabel" styleClass="badge"/>
+            </HBox>
+            <HBox spacing="24">
+                <VBox spacing="3">
+                    <Label text="Fecha de nacimiento" styleClass="metric-label"/>
+                    <Label fx:id="birthDateLabel" styleClass="person-meta-value"/>
+                </VBox>
+                <VBox spacing="3">
+                    <Label text="Teléfono" styleClass="metric-label"/>
+                    <Label fx:id="phoneLabel" styleClass="person-meta-value"/>
+                </VBox>
+            </HBox>
+        </VBox>
         <Pane HBox.hgrow="ALWAYS"/>
         <Button text="Editar" onAction="#handleEdit" styleClass="secondary-button"/>
         <Button fx:id="toggleActiveButton" onAction="#handleToggleActive" styleClass="danger-button"/>
     </HBox>
-    <HBox spacing="24">
-        <VBox spacing="4">
-            <Label text="Fecha de nacimiento" styleClass="metric-label"/>
-            <Label fx:id="birthDateLabel"/>
+
+    <HBox spacing="12">
+        <VBox styleClass="person-savings-card" spacing="6" HBox.hgrow="ALWAYS">
+            <Label text="Total ahorrado" styleClass="person-summary-title"/>
+            <Label fx:id="savingsValueLabel" styleClass="person-savings-value"/>
         </VBox>
-        <VBox spacing="4">
-            <Label text="Teléfono" styleClass="metric-label"/>
-            <Label fx:id="phoneLabel"/>
-        </VBox>
-    </HBox>
-    <HBox spacing="16">
-        <VBox styleClass="card" spacing="6" HBox.hgrow="ALWAYS">
-            <Label text="TOTAL AHORRADO" styleClass="metric-label"/>
-            <Label fx:id="savingsValueLabel" styleClass="metric-value value-income"/>
-        </VBox>
-        <VBox styleClass="card" spacing="6" HBox.hgrow="ALWAYS">
-            <Label text="DEUDA PENDIENTE" styleClass="metric-label"/>
-            <Label fx:id="debtValueLabel" styleClass="metric-value value-expense"/>
+        <VBox styleClass="person-debt-card" spacing="6" HBox.hgrow="ALWAYS">
+            <Label text="Deuda pendiente" styleClass="person-summary-title"/>
+            <Label fx:id="debtValueLabel" styleClass="person-debt-value"/>
         </VBox>
     </HBox>
-    <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
-        <Tab text="Ahorros">
-            <StackPane fx:id="savingsTabContent"/>
-        </Tab>
-        <Tab text="Préstamos">
-            <StackPane fx:id="loansTabContent"/>
-        </Tab>
-        <Tab text="Movimientos">
-            <StackPane fx:id="movementsTabContent"/>
-        </Tab>
-        <Tab text="Liquidaciones">
-            <StackPane fx:id="settlementsTabContent"/>
-        </Tab>
-    </TabPane>
+
+    <VBox styleClass="person-history-card" VBox.vgrow="ALWAYS">
+        <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" styleClass="person-detail-tabs">
+            <Tab text="Ahorros">
+                <StackPane fx:id="savingsTabContent"/>
+            </Tab>
+            <Tab text="Préstamos">
+                <StackPane fx:id="loansTabContent"/>
+            </Tab>
+            <Tab text="Movimientos">
+                <StackPane fx:id="movementsTabContent"/>
+            </Tab>
+            <Tab text="Liquidaciones">
+                <StackPane fx:id="settlementsTabContent"/>
+            </Tab>
+        </TabPane>
+    </VBox>
 </VBox>

@@ -1,0 +1,24 @@
+.movement-page {
+    -fx-spacing: 16;
+}
+
+.movement-actions {
+    -fx-spacing: 8;
+}
+
+.movement-filter-controls {
+    -fx-hgap: 10;
+    -fx-vgap: 10;
+}
+
+.movement-filter-controls .date-picker {
+    -fx-pref-width: 145px;
+}
+
+.movement-filter-controls .combo-box {
+    -fx-pref-width: 165px;
+}
+
+.movement-filter-controls .movement-kind-filter {
+    -fx-pref-width: 130px;
+}

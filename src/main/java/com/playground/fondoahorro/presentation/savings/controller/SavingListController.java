@@ -4,12 +4,7 @@ import com.playground.fondoahorro.domain.inputport.PersonService;
 import com.playground.fondoahorro.domain.inputport.SavingService;
 import com.playground.fondoahorro.domain.vo.Money;
 import com.playground.fondoahorro.domain.entity.Person;
-import com.playground.fondoahorro.domain.entity.Saving;
 import com.playground.fondoahorro.domain.vo.SavingListItem;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSavingRepository;
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
 import com.playground.fondoahorro.presentation.shared.EmptyStates;
@@ -27,13 +22,16 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
-import com.playground.fondoahorro.application.savings.service.SavingServiceImpl;
+import java.util.function.Consumer;
 
+@Component
+@Scope("prototype")
 public class SavingListController {
 
     private static final Logger log = LoggerFactory.getLogger(SavingListController.class);
@@ -53,9 +51,14 @@ public class SavingListController {
     @FXML
     private TableColumn<SavingListItem, String> notesColumn;
 
-    private final SavingService savingService = new SavingServiceImpl(
-            new JdbcSavingRepository(), new JdbcMovementRepository(), new JdbcMovementTypeRepository(), new JdbcPersonRepository());
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
+    private final SavingService savingService;
+    private final PersonService personService;
+    private Consumer<Long> onSavingSelected;
+
+    public SavingListController(SavingService savingService, PersonService personService) {
+        this.savingService = savingService;
+        this.personService = personService;
+    }
 
     @FXML
     private void initialize() {
@@ -71,8 +74,8 @@ public class SavingListController {
         table.setRowFactory(tv -> {
             TableRow<SavingListItem> row = new TableRow<>();
             row.setOnMouseClicked(event -> {
-                if (!row.isEmpty()) {
-                    handleEditSaving(row.getItem().saving());
+                if (!row.isEmpty() && onSavingSelected != null) {
+                    onSavingSelected.accept(row.getItem().saving().id());
                 }
             });
             return row;
@@ -90,6 +93,10 @@ public class SavingListController {
         refresh();
     }
 
+    public void setOnSavingSelected(Consumer<Long> handler) {
+        this.onSavingSelected = handler;
+    }
+
     @FXML
     private void handleNewSaving() {
         SavingFormDialog.show().ifPresent(input -> {
@@ -102,21 +109,6 @@ public class SavingListController {
             } catch (Exception e) {
                 log.error("Error al registrar ahorro", e);
                 Dialogs.error("Por ahora no fue posible registrar el ahorro. Intenta nuevamente.");
-            }
-        });
-    }
-
-    private void handleEditSaving(Saving saving) {
-        SavingFormDialog.showForEdit(saving).ifPresent(input -> {
-            try {
-                savingService.updateSaving(saving.id(), Money.of(input.amount()), input.date(), input.method(), input.notes());
-                refresh();
-                Toast.show(table.getScene().getWindow(), "Ahorro actualizado.");
-            } catch (IllegalArgumentException e) {
-                Dialogs.error(e.getMessage());
-            } catch (Exception e) {
-                log.error("Error al actualizar ahorro {}", saving.id(), e);
-                Dialogs.error("Por ahora no fue posible actualizar el ahorro. Intenta nuevamente.");
             }
         });
     }

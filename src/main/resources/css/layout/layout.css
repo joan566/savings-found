@@ -1,0 +1,166 @@
+.app-root {
+    -fx-background-color: -fx-bg;
+}
+
+.content-area {
+    -fx-background-color: -fx-bg;
+    -fx-padding: 24;
+}
+
+.content-area > .vbox {
+    -fx-background-color: -fx-dashboard-bg;
+}
+
+.content-area .scroll-pane,
+.content-area .scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.sidebar {
+    -fx-background-color: linear-gradient(to bottom, derive(-fx-primary-hover, -3%), derive(-fx-primary-hover, -16%));
+    -fx-border-color: transparent rgba(255, 255, 255, 0.08) transparent transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-effect: dropshadow(gaussian, rgba(15, 23, 42, 0.14), 14, 0, 3, 0);
+    -fx-padding: 24 12 20 12;
+}
+
+.sidebar.collapsed {
+    -fx-padding: 20 8 16 8;
+}
+
+.sidebar-header {
+    -fx-spacing: 8;
+    -fx-padding: 0 0 12 0;
+    -fx-border-color: transparent transparent rgba(255, 255, 255, 0.12) transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.sidebar-brand-mark {
+    -fx-min-width: 30px;
+    -fx-pref-width: 30px;
+    -fx-max-width: 30px;
+    -fx-min-height: 30px;
+    -fx-pref-height: 30px;
+    -fx-max-height: 30px;
+    -fx-alignment: center;
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+    -fx-background-radius: 9;
+    -fx-text-fill: white;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-toggle {
+    -fx-min-width: 30px;
+    -fx-pref-width: 30px;
+    -fx-max-width: 30px;
+    -fx-min-height: 30px;
+    -fx-pref-height: 30px;
+    -fx-max-height: 30px;
+    -fx-padding: 0;
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-background-radius: 9;
+    -fx-text-fill: #D7E8DE;
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+}
+
+.sidebar-toggle:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.16);
+    -fx-text-fill: white;
+}
+
+.sidebar-toggle:pressed {
+    -fx-background-color: rgba(255, 255, 255, 0.22);
+}
+
+.sidebar-navigation {
+    -fx-padding: 16 0 0 0;
+}
+
+.sidebar-settings {
+    -fx-padding: 8 0 0 0;
+}
+
+.sidebar-separator {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0 0 0 3;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-text-fill: #D7E4DC;
+    -fx-alignment: center-left;
+    -fx-padding: 10 12;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-graphic-text-gap: 10;
+}
+
+.nav-button .icon {
+    -fx-fill: #AFCBBC;
+}
+
+.nav-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.09);
+    -fx-text-fill: white;
+}
+
+.nav-button:hover .icon {
+    -fx-fill: white;
+}
+
+.nav-button:selected {
+    -fx-background-color: rgba(255, 255, 255, 0.14);
+    -fx-border-color: transparent transparent transparent #8FE0B6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.nav-button:selected .icon {
+    -fx-fill: white;
+}
+
+.sidebar.collapsed .sidebar-header {
+    -fx-spacing: 4;
+    -fx-padding: 0 0 12 0;
+}
+
+.sidebar.collapsed .sidebar-brand-mark {
+    -fx-min-width: 22px;
+    -fx-pref-width: 22px;
+    -fx-max-width: 22px;
+    -fx-min-height: 22px;
+    -fx-pref-height: 22px;
+    -fx-max-height: 22px;
+    -fx-font-size: 9px;
+}
+
+.sidebar.collapsed .sidebar-toggle {
+    -fx-min-width: 22px;
+    -fx-pref-width: 22px;
+    -fx-max-width: 22px;
+    -fx-min-height: 22px;
+    -fx-pref-height: 22px;
+    -fx-max-height: 22px;
+    -fx-font-size: 16px;
+}
+
+.sidebar.collapsed .sidebar-navigation {
+    -fx-padding: 12 0 0 0;
+}
+
+.sidebar.collapsed .nav-button {
+    -fx-alignment: center;
+    -fx-padding: 10 0;
+    -fx-graphic-text-gap: 0;
+}

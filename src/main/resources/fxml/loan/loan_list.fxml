@@ -5,16 +5,21 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.ToggleButton?>
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.playground.fondoahorro.presentation.loan.controller.LoanListController"
-      spacing="16">
-    <HBox spacing="12" alignment="CENTER_LEFT">
+spacing="16">
+    <styleClass>
+  <String fx:value="application-page"/>
+  <String fx:value="loan-page"/>
+    </styleClass>
+
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="page-header">
         <VBox spacing="2">
             <Label text="Préstamos" styleClass="page-title"/>
             <Label text="Administra los préstamos y consulta los saldos pendientes." styleClass="page-subtitle"/>
@@ -22,25 +27,85 @@
         <Pane HBox.hgrow="ALWAYS"/>
         <Button text="+ Nuevo préstamo" onAction="#handleNewLoan" styleClass="primary-button"/>
     </HBox>
-    <FlowPane hgap="16" vgap="16">
-        <VBox styleClass="card" spacing="4" prefWidth="220">
-            <Label text="Dinero prestado" styleClass="metric-label"/>
-            <Label fx:id="loanedMoneyLabel" styleClass="metric-value"/>
+
+    <HBox spacing="12" styleClass="loan-metrics">
+        <VBox spacing="12" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <styleClass>
+                <String fx:value="card"/>
+                <String fx:value="loan-summary-card"/>
+                <String fx:value="loan-summary-principal"/>
+            </styleClass>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Label fx:id="loanedMoneyIcon">
+                    <styleClass>
+                        <String fx:value="loan-metric-icon"/>
+                        <String fx:value="loan-icon-blue"/>
+                    </styleClass>
+                </Label>
+                <Label text="Dinero prestado" styleClass="loan-metric-title"/>
+            </HBox>
+            <Label fx:id="loanedMoneyLabel">
+                <styleClass>
+                    <String fx:value="metric-value"/>
+                    <String fx:value="loan-metric-value"/>
+                </styleClass>
+            </Label>
         </VBox>
-        <VBox styleClass="card" spacing="4" prefWidth="220">
-            <Label text="Deuda pendiente" styleClass="metric-label"/>
-            <Label fx:id="outstandingDebtLabel" styleClass="metric-value value-expense"/>
+
+        <VBox spacing="12" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <styleClass>
+                <String fx:value="card"/>
+                <String fx:value="loan-summary-card"/>
+                <String fx:value="loan-summary-interest"/>
+            </styleClass>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Label fx:id="outstandingDebtIcon">
+                    <styleClass>
+                        <String fx:value="loan-metric-icon"/>
+                        <String fx:value="loan-icon-red"/>
+                    </styleClass>
+                </Label>
+                <Label text="Deuda pendiente" styleClass="loan-metric-title"/>
+            </HBox>
+            <Label fx:id="outstandingDebtLabel">
+                <styleClass>
+                    <String fx:value="metric-value"/>
+                    <String fx:value="loan-metric-value"/>
+                    <String fx:value="value-expense"/>
+                </styleClass>
+            </Label>
         </VBox>
-        <VBox styleClass="card" spacing="4" prefWidth="220">
-            <Label text="Préstamos activos" styleClass="metric-label"/>
-            <Label fx:id="activeLoanCountLabel" styleClass="metric-value"/>
+
+        <VBox spacing="12" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+            <styleClass>
+                <String fx:value="card"/>
+                <String fx:value="loan-summary-card"/>
+                <String fx:value="loan-summary-paid"/>
+            </styleClass>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Label fx:id="activeLoanCountIcon">
+                    <styleClass>
+                        <String fx:value="loan-metric-icon"/>
+                        <String fx:value="loan-icon-green"/>
+                    </styleClass>
+                </Label>
+                <Label text="Préstamos activos" styleClass="loan-metric-title"/>
+            </HBox>
+            <Label fx:id="activeLoanCountLabel">
+                <styleClass>
+                    <String fx:value="metric-value"/>
+                    <String fx:value="loan-metric-value"/>
+                </styleClass>
+            </Label>
         </VBox>
-    </FlowPane>
-    <HBox spacing="8" alignment="CENTER_LEFT">
+    </HBox>
+
+    <HBox spacing="8" alignment="CENTER_LEFT" styleClass="loan-filter-bar">
         <ToggleButton fx:id="activeToggle" text="Activos" styleClass="secondary-button"/>
         <ToggleButton fx:id="paidToggle" text="Pagados" styleClass="secondary-button"/>
         <ToggleButton fx:id="allToggle" text="Todos" styleClass="secondary-button"/>
     </HBox>
+
     <TableView fx:id="table" VBox.vgrow="ALWAYS" styleClass="clickable-table">
         <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>

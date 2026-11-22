@@ -1,6 +1,7 @@
 package com.playground.fondoahorro.integration;
 
 import com.playground.fondoahorro.domain.inputport.BirthdayGiftService;
+import com.playground.fondoahorro.domain.inputport.DashboardService;
 import com.playground.fondoahorro.application.importing.dto.ImportExecutionException;
 import com.playground.fondoahorro.application.importing.dto.ImportPlan;
 import com.playground.fondoahorro.application.importing.service.ImportService;
@@ -8,7 +9,6 @@ import com.playground.fondoahorro.domain.inputport.LoanService;
 import com.playground.fondoahorro.domain.inputport.MovementService;
 import com.playground.fondoahorro.domain.inputport.PersonService;
 import com.playground.fondoahorro.domain.inputport.SavingService;
-import com.playground.fondoahorro.domain.inputport.AppSettingsService;
 import com.playground.fondoahorro.domain.inputport.SettlementService;
 import com.playground.fondoahorro.domain.entity.Loan;
 import com.playground.fondoahorro.domain.entity.LoanInterestCharge;
@@ -16,9 +16,12 @@ import com.playground.fondoahorro.domain.entity.LoanPayment;
 import com.playground.fondoahorro.domain.vo.Money;
 import com.playground.fondoahorro.domain.enums.Fund;
 import com.playground.fondoahorro.domain.vo.FundBalances;
+import com.playground.fondoahorro.domain.vo.DashboardSnapshot;
 import com.playground.fondoahorro.domain.entity.Movement;
+import com.playground.fondoahorro.domain.vo.MonthlyFundContributions;
 import com.playground.fondoahorro.domain.vo.MovementFilter;
 import com.playground.fondoahorro.domain.enums.MovementKind;
+import com.playground.fondoahorro.domain.enums.DashboardPeriod;
 import com.playground.fondoahorro.domain.outputport.MovementRepository;
 import com.playground.fondoahorro.domain.entity.MovementType;
 import com.playground.fondoahorro.domain.outputport.MovementTypeRepository;
@@ -27,41 +30,30 @@ import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.domain.vo.PersonSummary;
 import com.playground.fondoahorro.domain.entity.Saving;
 import com.playground.fondoahorro.domain.entity.Settlement;
-import com.playground.fondoahorro.infrastructure.repository.JdbcBirthdayGiftRepository;
-import com.playground.fondoahorro.infrastructure.config.DatabaseManager;
-import com.playground.fondoahorro.infrastructure.transaction.TransactionRunner;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanInterestChargeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanPaymentRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSavingRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcAppSettingsRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSettlementRepository;
+import com.playground.fondoahorro.FondoAhorroApplication;
+import com.playground.fondoahorro.infrastructure.adapters.DatabaseBackup;
+import com.playground.fondoahorro.presentation.person.controller.PersonDetailController;
+import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
-import com.playground.fondoahorro.application.loan.service.LoanServiceImpl;
-import com.playground.fondoahorro.application.movement.service.MovementServiceImpl;
-import com.playground.fondoahorro.application.savings.service.SavingServiceImpl;
-import com.playground.fondoahorro.application.settings.service.AppSettingsServiceImpl;
-import com.playground.fondoahorro.application.settlement.service.SettlementServiceImpl;
-import com.playground.fondoahorro.application.birthday.service.BirthdayGiftServiceImpl;
-import com.playground.fondoahorro.application.importing.service.ImportServiceImpl;
 
 /**
  * Exercises the financial rules that need a real database to prove: balances
@@ -75,6 +67,8 @@ class FinancialIntegrationTest {
     @TempDir
     static Path tempDir;
 
+    private static Path databaseFile;
+    private static ConfigurableApplicationContext context;
     private PersonService personService;
     private SavingService savingService;
     private LoanService loanService;
@@ -84,39 +78,78 @@ class FinancialIntegrationTest {
     private ImportService importService;
     private MovementRepository movementRepository;
     private MovementTypeRepository movementTypeRepository;
+    private DashboardService dashboardService;
 
     @BeforeAll
     static void initDatabase() {
-        System.setProperty("fondoahorro.data.dir", tempDir.toString());
-        DatabaseManager.initialize();
+        databaseFile = tempDir.resolve("created/by/spring/fondo-ahorro.db");
+        context = new SpringApplicationBuilder(FondoAhorroApplication.class)
+                .web(WebApplicationType.NONE)
+                .run("--database.path=" + databaseFile,
+                        "--spring.datasource.hikari.connection-init-sql=PRAGMA foreign_keys=ON");
+    }
+
+    @org.junit.jupiter.api.AfterAll
+    static void closeContext() {
+        if (context != null) {
+            context.close();
+        }
     }
 
     @BeforeEach
     void wireServices() {
-        var personRepository = new JdbcPersonRepository();
-        movementRepository = new JdbcMovementRepository();
-        movementTypeRepository = new JdbcMovementTypeRepository();
-        var savingRepository = new JdbcSavingRepository();
-        var loanRepository = new JdbcLoanRepository();
-        var loanPaymentRepository = new JdbcLoanPaymentRepository();
-        var loanInterestChargeRepository = new JdbcLoanInterestChargeRepository();
-        var settlementRepository = new JdbcSettlementRepository();
-        var giftRepository = new JdbcBirthdayGiftRepository();
-        var appSettingsService = new AppSettingsServiceImpl(new JdbcAppSettingsRepository());
-
-        personService = new PersonServiceImpl(personRepository);
-        savingService = new SavingServiceImpl(savingRepository, movementRepository, movementTypeRepository, personRepository);
-        loanService = new LoanServiceImpl(loanRepository, loanPaymentRepository, loanInterestChargeRepository, movementRepository,
-                movementTypeRepository, personRepository, appSettingsService);
-        birthdayGiftService = new BirthdayGiftServiceImpl(giftRepository, movementRepository, movementTypeRepository,
-                personRepository, appSettingsService);
-        movementService = new MovementServiceImpl(movementRepository, movementTypeRepository, personRepository);
-        settlementService = new SettlementServiceImpl(settlementRepository, savingRepository, personRepository, appSettingsService);
-        importService = new ImportServiceImpl(personService, savingService, loanService);
+        personService = context.getBean(PersonService.class);
+        savingService = context.getBean(SavingService.class);
+        loanService = context.getBean(LoanService.class);
+        birthdayGiftService = context.getBean(BirthdayGiftService.class);
+        movementService = context.getBean(MovementService.class);
+        settlementService = context.getBean(SettlementService.class);
+        importService = context.getBean(ImportService.class);
+        movementRepository = context.getBean(MovementRepository.class);
+        movementTypeRepository = context.getBean(MovementTypeRepository.class);
+        dashboardService = context.getBean(DashboardService.class);
     }
 
     private static Money pesos(String value) {
         return Money.of(new BigDecimal(value));
+    }
+
+    @Test
+    void javafxControllersAreCreatedBySpringWithPrototypeScope() {
+        PersonDetailController first = context.getBean(PersonDetailController.class);
+        PersonDetailController second = context.getBean(PersonDetailController.class);
+
+        assertNotSame(first, second);
+
+        for (String beanName : context.getBeanDefinitionNames()) {
+            Class<?> beanType = context.getType(beanName);
+            if (beanType != null
+                    && beanType.getPackageName().startsWith("com.playground.fondoahorro.presentation.")
+                    && beanType.getSimpleName().endsWith("Controller")) {
+                context.getBean(beanName);
+            }
+        }
+    }
+
+    @Test
+    void springCreatesTheDatabaseDirectoryAndRunsMigrations() {
+        assertTrue(Files.isRegularFile(databaseFile));
+        assertTrue(Files.isDirectory(databaseFile.getParent()));
+    }
+
+    @Test
+    void databaseBackupCanCreateAndRestoreASqliteSnapshot() throws Exception {
+        DatabaseBackup backup = context.getBean(DatabaseBackup.class);
+        Path backupFile = tempDir.resolve("backups/fondo-ahorro.db");
+        int peopleBefore = personService.list(null, true).size();
+
+        backup.copyTo(backupFile);
+        personService.createPerson("Test Restaurar Copia", LocalDate.of(1990, 1, 1), null);
+        assertEquals(peopleBefore + 1, personService.list(null, true).size());
+
+        backup.restoreFrom(backupFile);
+
+        assertEquals(peopleBefore, personService.list(null, true).size());
     }
 
     @Test
@@ -203,10 +236,12 @@ class FinancialIntegrationTest {
 
         int before = movementService.list(MovementFilter.empty()).size();
 
-        assertThrows(RuntimeException.class, () -> TransactionRunner.run(connection -> {
+        TransactionTemplate transactions = new TransactionTemplate(
+                context.getBean(PlatformTransactionManager.class));
+        assertThrows(RuntimeException.class, () -> transactions.execute(status -> {
             Movement movement = Movement.create(type.id(), Fund.SAVINGS, PaymentMethod.CASH, MovementKind.INCOME,
                     pesos("999999"), LocalDate.now(), person.id(), null, null, "esto debe revertirse");
-            movementRepository.insert(connection, movement);
+            movementRepository.insert(movement);
             throw new RuntimeException("fallo simulado a mitad de la transacción");
         }));
 
@@ -253,7 +288,7 @@ class FinancialIntegrationTest {
     }
 
     @Test
-    void editingASavingUpdatesTheSavingAndItsPairedMovementTogether() throws SQLException {
+    void editingASavingUpdatesTheSavingAndItsPairedMovementTogether() {
         Person person = personService.createPerson("Test Editar Ahorro", LocalDate.of(1990, 1, 1), null);
         Saving saving = savingService.registerSaving(person.id(), pesos("100000"), LocalDate.now(), PaymentMethod.CASH, "nota original");
 
@@ -263,12 +298,10 @@ class FinancialIntegrationTest {
         assertEquals(PaymentMethod.TRANSFER, updated.paymentMethod());
         assertEquals("nota corregida", updated.notes());
 
-        try (Connection connection = DatabaseManager.getConnection()) {
-            Movement movement = movementRepository.findByReference(connection, "savings", saving.id()).orElseThrow();
-            assertEquals(pesos("150000"), movement.amount());
-            assertEquals(PaymentMethod.TRANSFER, movement.paymentMethod());
-            assertEquals("nota corregida", movement.notes());
-        }
+        Movement movement = movementRepository.findByReference("savings", saving.id()).orElseThrow();
+        assertEquals(pesos("150000"), movement.amount());
+        assertEquals(PaymentMethod.TRANSFER, movement.paymentMethod());
+        assertEquals("nota corregida", movement.notes());
     }
 
     @Test
@@ -373,5 +406,43 @@ class FinancialIntegrationTest {
 
         assertTrue(personService.list("Test Import Rollback Exec", true).isEmpty(),
                 "the person created earlier in the same transaction must be rolled back too");
+    }
+
+    @Test
+    void dashboardChartGroupsOnlyIncomeByFundAndSelectedMonthRange() {
+        LocalDate today = LocalDate.now();
+        DashboardSnapshot before = dashboardService.getSnapshot(DashboardPeriod.LAST_6_MONTHS);
+        MovementType incomeType = movementTypeRepository.findByKind(MovementKind.INCOME, true).stream()
+                .findFirst().orElseThrow();
+        MovementType expenseType = movementTypeRepository.findByKind(MovementKind.EXPENSE, true).stream()
+                .findFirst().orElseThrow();
+
+        Money savingsIncome = pesos("12345.67");
+        Money birthdayIncome = pesos("25000");
+        movementRepository.insert(Movement.create(incomeType.id(), Fund.SAVINGS, PaymentMethod.CASH,
+                MovementKind.INCOME, savingsIncome, today, null, null, null, null));
+        movementRepository.insert(Movement.create(incomeType.id(), Fund.BIRTHDAY, PaymentMethod.CASH,
+                MovementKind.INCOME, birthdayIncome, today, null, null, null, null));
+        movementRepository.insert(Movement.create(expenseType.id(), Fund.SAVINGS, PaymentMethod.CASH,
+                MovementKind.EXPENSE, pesos("7000"), today, null, null, null, null));
+        movementRepository.insert(Movement.create(incomeType.id(), Fund.SAVINGS, PaymentMethod.CASH,
+                MovementKind.INCOME, pesos("999999"), DashboardPeriod.LAST_6_MONTHS.startDate(today).minusDays(1),
+                null, null, null, null));
+
+        DashboardSnapshot after = dashboardService.getSnapshot(DashboardPeriod.LAST_6_MONTHS);
+        MonthlyFundContributions beforeCurrentMonth = before.monthlyFundContributions().stream()
+                .filter(row -> row.month().equals(YearMonth.from(today)))
+                .findFirst().orElseThrow();
+        MonthlyFundContributions currentMonth = after.monthlyFundContributions().stream()
+                .filter(row -> row.month().equals(YearMonth.from(today)))
+                .findFirst().orElseThrow();
+
+        assertEquals(6, after.monthlyFundContributions().size());
+        assertEquals(beforeCurrentMonth.savings().plus(savingsIncome), currentMonth.savings());
+        assertEquals(beforeCurrentMonth.birthdays().plus(birthdayIncome), currentMonth.birthdays());
+        assertEquals(12, dashboardService.getSnapshot(DashboardPeriod.LAST_12_MONTHS)
+                .monthlyFundContributions().size());
+        assertEquals(today.getMonthValue(), dashboardService.getSnapshot(DashboardPeriod.CURRENT_YEAR)
+                .monthlyFundContributions().size());
     }
 }

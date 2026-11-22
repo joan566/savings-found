@@ -10,21 +10,24 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.playground.fondoahorro.presentation.settlement.controller.SettlementListController"
-      spacing="16">
-    <HBox spacing="12" alignment="CENTER_LEFT">
+      spacing="16"
+      styleClass="application-page settlement-page">
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="page-header">
         <VBox spacing="2">
             <Label text="Liquidaciones" styleClass="page-title"/>
             <Label text="Calcula y consulta cuánto corresponde devolver a cada participante." styleClass="page-subtitle"/>
         </VBox>
     </HBox>
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <Label text="Año"/>
-        <ComboBox fx:id="yearCombo"/>
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="settlement-toolbar">
+        <VBox spacing="4">
+            <Label text="Año a liquidar" styleClass="field-label"/>
+            <ComboBox fx:id="yearCombo" styleClass="settlement-year-filter"/>
+        </VBox>
+        <VBox styleClass="card metric-card settlement-total-card" spacing="4" HBox.hgrow="ALWAYS">
+            <Label text="Total a liquidar" styleClass="metric-label"/>
+            <Label fx:id="yearTotalLabel" styleClass="metric-hero"/>
+        </VBox>
     </HBox>
-    <VBox styleClass="card" spacing="4">
-        <Label text="Total a liquidar" styleClass="metric-label"/>
-        <Label fx:id="yearTotalLabel" styleClass="metric-hero"/>
-    </VBox>
     <TableView fx:id="table" VBox.vgrow="ALWAYS" styleClass="clickable-table">
         <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>

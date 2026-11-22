@@ -1,0 +1,29 @@
+.settlement-page,
+.settlement-detail-page {
+    -fx-spacing: 16;
+}
+
+.settlement-toolbar {
+    -fx-spacing: 12;
+}
+
+.settlement-year-filter {
+    -fx-pref-width: 160px;
+}
+
+.settlement-total-card {
+    -fx-background-color: #EAF8F2;
+    -fx-border-color: #D8F0E6;
+}
+
+.settlement-total-card .metric-hero {
+    -fx-text-fill: -fx-success;
+}
+
+.settlement-detail-card {
+    -fx-padding: 24;
+}
+
+.settlement-detail-card .metric-hero {
+    -fx-font-size: 30px;
+}

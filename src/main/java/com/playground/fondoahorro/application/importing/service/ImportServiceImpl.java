@@ -5,7 +5,7 @@ import com.playground.fondoahorro.domain.inputport.PersonService;
 import com.playground.fondoahorro.domain.inputport.SavingService;
 import com.playground.fondoahorro.domain.entity.Loan;
 import com.playground.fondoahorro.domain.entity.Person;
-import com.playground.fondoahorro.infrastructure.transaction.TransactionRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,71 +47,70 @@ public class ImportServiceImpl implements ImportService {
 
     /** Expects a plan that came out of a successful ImportValidator.validate(...) — every cross-reference is assumed to resolve. */
     @Override
+    @Transactional
     public ImportSummary execute(ImportPlan plan) {
-        return TransactionRunner.run(connection -> {
-            Map<String, Long> personIdsByName = new HashMap<>();
-            for (ImportPlan.PersonRow row : plan.persons()) {
-                try {
-                    Person created = personService.createPerson(connection, row.name(), row.birthDate(), row.phone());
-                    personIdsByName.put(row.name(), created.id());
-                } catch (RuntimeException e) {
-                    throw new ImportExecutionException(SHEET_PERSONS, row.rowNumber(),
-                            "No fue posible crear a \"" + row.name() + "\": " + e.getMessage());
-                }
+        Map<String, Long> personIdsByName = new HashMap<>();
+        for (ImportPlan.PersonRow row : plan.persons()) {
+            try {
+                Person created = personService.createPerson(row.name(), row.birthDate(), row.phone());
+                personIdsByName.put(row.name(), created.id());
+            } catch (RuntimeException e) {
+                throw new ImportExecutionException(SHEET_PERSONS, row.rowNumber(),
+                        "No fue posible crear a \"" + row.name() + "\": " + e.getMessage());
             }
+        }
 
-            List<Operation> operations = new ArrayList<>();
-            plan.savings().forEach(row -> operations.add(new SavingOperation(row)));
-            plan.loans().forEach(row -> operations.add(new LoanOperation(row)));
-            plan.payments().forEach(row -> operations.add(new PaymentOperation(row)));
-            // Stable sort: on a tie, savings/loans/payments keep the relative order they
-            // were added above, so a loan and its own payment on the same date never race.
-            operations.sort(Comparator.comparing(Operation::date));
+        List<Operation> operations = new ArrayList<>();
+        plan.savings().forEach(row -> operations.add(new SavingOperation(row)));
+        plan.loans().forEach(row -> operations.add(new LoanOperation(row)));
+        plan.payments().forEach(row -> operations.add(new PaymentOperation(row)));
+        // Stable sort: on a tie, savings/loans/payments keep the relative order they
+        // were added above, so a loan and its own payment on the same date never race.
+        operations.sort(Comparator.comparing(Operation::date));
 
-            Map<String, Long> loanIdsByLocalId = new HashMap<>();
-            int savingsCreated = 0;
-            int loansCreated = 0;
-            int paymentsCreated = 0;
-            for (Operation operation : operations) {
-                switch (operation) {
-                    case SavingOperation savingOp -> {
-                        ImportPlan.SavingRow row = savingOp.row();
-                        try {
-                            savingService.registerSaving(connection, personIdsByName.get(row.personName()),
-                                    row.amount(), row.date(), row.method(), row.notes());
-                            savingsCreated++;
-                        } catch (RuntimeException e) {
-                            throw new ImportExecutionException(SHEET_SAVINGS, row.rowNumber(),
-                                    "No fue posible registrar el ahorro de \"" + row.personName() + "\": " + e.getMessage());
-                        }
-                    }
-                    case LoanOperation loanOp -> {
-                        ImportPlan.LoanRow row = loanOp.row();
-                        try {
-                            Loan created = loanService.createLoan(connection, personIdsByName.get(row.personName()),
-                                    row.principal(), row.interestRateBps(), row.loanDate(), row.method(), row.notes());
-                            loanIdsByLocalId.put(row.localLoanId(), created.id());
-                            loansCreated++;
-                        } catch (RuntimeException e) {
-                            throw new ImportExecutionException(SHEET_LOANS, row.rowNumber(),
-                                    "No fue posible registrar el préstamo " + row.localLoanId() + ": " + e.getMessage());
-                        }
-                    }
-                    case PaymentOperation paymentOp -> {
-                        ImportPlan.PaymentRow row = paymentOp.row();
-                        try {
-                            loanService.registerPayment(connection, loanIdsByLocalId.get(row.localLoanId()),
-                                    row.amount(), row.paymentDate(), row.method(), row.notes());
-                            paymentsCreated++;
-                        } catch (RuntimeException e) {
-                            throw new ImportExecutionException(SHEET_PAYMENTS, row.rowNumber(),
-                                    "No fue posible registrar el pago del préstamo " + row.localLoanId() + ": " + e.getMessage());
-                        }
+        Map<String, Long> loanIdsByLocalId = new HashMap<>();
+        int savingsCreated = 0;
+        int loansCreated = 0;
+        int paymentsCreated = 0;
+        for (Operation operation : operations) {
+            switch (operation) {
+                case SavingOperation savingOp -> {
+                    ImportPlan.SavingRow row = savingOp.row();
+                    try {
+                        savingService.registerSaving(personIdsByName.get(row.personName()),
+                                row.amount(), row.date(), row.method(), row.notes());
+                        savingsCreated++;
+                    } catch (RuntimeException e) {
+                        throw new ImportExecutionException(SHEET_SAVINGS, row.rowNumber(),
+                                "No fue posible registrar el ahorro de \"" + row.personName() + "\": " + e.getMessage());
                     }
                 }
+                case LoanOperation loanOp -> {
+                    ImportPlan.LoanRow row = loanOp.row();
+                    try {
+                        Loan created = loanService.createLoan(personIdsByName.get(row.personName()),
+                                row.principal(), row.interestRateBps(), row.loanDate(), row.method(), row.notes());
+                        loanIdsByLocalId.put(row.localLoanId(), created.id());
+                        loansCreated++;
+                    } catch (RuntimeException e) {
+                        throw new ImportExecutionException(SHEET_LOANS, row.rowNumber(),
+                                "No fue posible registrar el préstamo " + row.localLoanId() + ": " + e.getMessage());
+                    }
+                }
+                case PaymentOperation paymentOp -> {
+                    ImportPlan.PaymentRow row = paymentOp.row();
+                    try {
+                        loanService.registerPayment(loanIdsByLocalId.get(row.localLoanId()),
+                                row.amount(), row.paymentDate(), row.method(), row.notes());
+                        paymentsCreated++;
+                    } catch (RuntimeException e) {
+                        throw new ImportExecutionException(SHEET_PAYMENTS, row.rowNumber(),
+                                "No fue posible registrar el pago del préstamo " + row.localLoanId() + ": " + e.getMessage());
+                    }
+                }
             }
-            return new ImportSummary(plan.persons().size(), savingsCreated, loansCreated, paymentsCreated);
-        });
+        }
+        return new ImportSummary(plan.persons().size(), savingsCreated, loansCreated, paymentsCreated);
     }
 
     private sealed interface Operation permits SavingOperation, LoanOperation, PaymentOperation {

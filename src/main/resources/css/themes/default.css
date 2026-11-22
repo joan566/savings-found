@@ -1,0 +1,36 @@
+.root {
+    -fx-primary: #1E7A52;
+    -fx-primary-hover: #166044;
+    -fx-primary-subtle: #E8F5EF;
+
+    -fx-bg: #F7F8FA;
+    -fx-surface: #FFFFFF;
+    -fx-border: #E5E7EB;
+    -fx-border-strong: #D1D5DB;
+
+    -fx-text-primary: #111827;
+    -fx-text-secondary: #4B5563;
+    -fx-text-muted: #9CA3AF;
+
+    -fx-success: #16A34A;
+    -fx-success-subtle: #DCFCE7;
+    -fx-warning: #D97706;
+    -fx-warning-subtle: #FEF3C7;
+    -fx-danger: #DC2626;
+    -fx-danger-subtle: #FEE2E2;
+    -fx-info: #2563EB;
+    -fx-info-subtle: #DBEAFE;
+
+    -fx-dashboard-bg: #F3F7FC;
+    -fx-dashboard-blue: #2563EB;
+    -fx-dashboard-green: #10B981;
+    -fx-dashboard-purple: #7C3AED;
+    -fx-dashboard-orange: #EA580C;
+
+    -fx-primary-dark: #166044;
+    -fx-card-bg: #FFFFFF;
+    -fx-text: #111827;
+    -fx-income: #16A34A;
+    -fx-expense: #DC2626;
+    -fx-alert: #D97706;
+}

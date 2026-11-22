@@ -1,6 +1,7 @@
 package com.playground.fondoahorro.presentation.settlement.controller;
 
 import com.playground.fondoahorro.presentation.shared.Dialogs;
+import com.playground.fondoahorro.presentation.shared.SpringFXMLLoader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -14,7 +15,7 @@ public final class YearPickerDialog {
 
     public static Optional<Integer> show(String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(YearPickerDialog.class.getResource("/fxml/settlement/year_picker.fxml"));
+            FXMLLoader loader = SpringFXMLLoader.create(YearPickerDialog.class.getResource("/fxml/settlement/year_picker.fxml"));
             Parent content = loader.load();
             YearPickerController controller = loader.getController();
 

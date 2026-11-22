@@ -14,17 +14,18 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.playground.fondoahorro.presentation.settings.controller.SettingsController"
-      spacing="16">
-    <VBox spacing="2">
+spacing="16"
+styleClass="application-page settings-page">
+    <VBox spacing="2" styleClass="page-header">
         <Label text="Configuración" styleClass="page-title"/>
         <Label text="Personaliza los tipos de movimiento y los valores del fondo." styleClass="page-subtitle"/>
     </VBox>
     <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;">
-        <VBox spacing="16">
+        <VBox spacing="16" styleClass="settings-content">
             <padding>
                 <Insets top="4" right="4" bottom="16" left="4"/>
             </padding>
-            <VBox styleClass="card" spacing="10">
+            <VBox styleClass="card settings-section" spacing="10">
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Tipos de ingreso" styleClass="section-title"/>
                     <Pane HBox.hgrow="ALWAYS"/>
@@ -42,7 +43,7 @@
                     </columns>
                 </TableView>
             </VBox>
-            <VBox styleClass="card" spacing="10">
+            <VBox styleClass="card settings-section" spacing="10">
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <Label text="Tipos de egreso" styleClass="section-title"/>
                     <Pane HBox.hgrow="ALWAYS"/>
@@ -60,51 +61,51 @@
                     </columns>
                 </TableView>
             </VBox>
-            <VBox styleClass="card" spacing="14">
+            <VBox styleClass="card settings-section" spacing="14">
                 <Label text="Configuración del fondo" styleClass="section-title"/>
-                <VBox spacing="4">
+                <VBox spacing="4" styleClass="settings-value-group">
                     <Label text="Interés de préstamos (%)" styleClass="metric-label"/>
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <TextField fx:id="loanInterestField" prefWidth="120"/>
                         <Button text="Guardar" onAction="#handleSaveLoanInterest" styleClass="secondary-button"/>
                     </HBox>
-                    <Label text="Se aplica a los préstamos nuevos; no afecta a los ya creados." styleClass="metric-label"/>
+                    <Label text="Se aplica a los préstamos nuevos; no afecta a los ya creados." styleClass="settings-description" wrapText="true"/>
                 </VBox>
-                <VBox spacing="4">
+                <VBox spacing="4" styleClass="settings-value-group">
                     <Label text="Valor del regalo de cumpleaños" styleClass="metric-label"/>
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <TextField fx:id="giftAmountField" prefWidth="120"/>
                         <Button text="Guardar" onAction="#handleSaveGiftAmount" styleClass="secondary-button"/>
                     </HBox>
-                    <Label text="Valor sugerido al registrar un nuevo regalo." styleClass="metric-label"/>
+                    <Label text="Valor sugerido al registrar un nuevo regalo." styleClass="settings-description" wrapText="true"/>
                 </VBox>
-                <VBox spacing="4">
+                <VBox spacing="4" styleClass="settings-value-group">
                     <Label text="Interés de liquidación (%)" styleClass="metric-label"/>
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <TextField fx:id="settlementInterestField" prefWidth="120"/>
                         <Button text="Guardar" onAction="#handleSaveSettlementInterest" styleClass="secondary-button"/>
                     </HBox>
-                    <Label text="Se aplica a las liquidaciones que se preparen desde ahora." styleClass="metric-label"/>
+                    <Label text="Se aplica a las liquidaciones que se preparen desde ahora." styleClass="settings-description" wrapText="true"/>
                 </VBox>
             </VBox>
-            <VBox styleClass="card" spacing="14">
+            <VBox styleClass="card settings-section" spacing="14">
                 <Label text="Copia de seguridad" styleClass="section-title"/>
                 <VBox spacing="8">
                     <Label text="Guarda una copia de la base de datos en el lugar que elijas (por ejemplo, una memoria USB o una carpeta de respaldo)."
-                           styleClass="metric-label" wrapText="true"/>
+                           styleClass="settings-description" wrapText="true"/>
                     <Button text="Crear copia de seguridad" onAction="#handleCreateBackup" styleClass="primary-button"/>
                 </VBox>
-                <VBox spacing="8">
+                <VBox spacing="8" styleClass="settings-critical-action">
                     <Label text="Restaurar reemplaza TODOS los datos actuales por los de la copia elegida. La aplicación se cerrará después; ábrela de nuevo para continuar."
-                           styleClass="metric-label" wrapText="true"/>
+                           styleClass="settings-description" wrapText="true"/>
                     <Button text="Restaurar copia de seguridad" onAction="#handleRestoreBackup" styleClass="danger-button"/>
                 </VBox>
             </VBox>
-            <VBox styleClass="card" spacing="14">
+            <VBox styleClass="card settings-section" spacing="14">
                 <Label text="Importar datos desde Excel" styleClass="section-title"/>
                 <VBox spacing="8">
                     <Label text="Descarga la plantilla, complétala con personas, ahorros y préstamos (con su historial de pagos), y luego impórtala. Útil para cargar de una vez los datos que ya llevas en otro lado, sin escribirlos uno por uno."
-                           styleClass="metric-label" wrapText="true"/>
+                           styleClass="settings-description" wrapText="true"/>
                     <HBox spacing="10">
                         <Button text="Descargar plantilla" onAction="#handleDownloadTemplate" styleClass="secondary-button"/>
                         <Button text="Importar desde Excel" onAction="#handleImportFromExcel" styleClass="primary-button"/>

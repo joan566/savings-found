@@ -7,7 +7,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 import java.util.Optional;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 public class MovementTypeFormController {
 
     @FXML

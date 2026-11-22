@@ -1,0 +1,31 @@
+.settings-page {
+    -fx-spacing: 16;
+}
+
+.settings-content {
+    -fx-spacing: 14;
+}
+
+.settings-section {
+    -fx-spacing: 12;
+}
+
+.settings-section .section-title {
+    -fx-padding: 0 0 2 0;
+}
+
+.settings-value-group {
+    -fx-spacing: 6;
+    -fx-padding: 6 0;
+}
+
+.settings-description {
+    -fx-text-fill: -fx-text-secondary;
+    -fx-font-size: 12px;
+}
+
+.settings-critical-action {
+    -fx-background-color: -fx-danger-subtle;
+    -fx-background-radius: 10;
+    -fx-padding: 12;
+}

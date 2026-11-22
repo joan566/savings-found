@@ -1,13 +1,8 @@
 package com.playground.fondoahorro.presentation.settlement.controller;
 
-import com.playground.fondoahorro.domain.inputport.AppSettingsService;
 import com.playground.fondoahorro.domain.inputport.SettlementService;
 import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.domain.entity.Settlement;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSavingRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcAppSettingsRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSettlementRepository;
 import com.playground.fondoahorro.presentation.shared.EmptyStates;
 import com.playground.fondoahorro.presentation.shared.Icons.Icon;
 import com.playground.fondoahorro.presentation.shared.MoneyFormatter;
@@ -20,10 +15,12 @@ import javafx.scene.control.TableView;
 
 import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
-import com.playground.fondoahorro.application.settings.service.AppSettingsServiceImpl;
-import com.playground.fondoahorro.application.settlement.service.SettlementServiceImpl;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /** Embedded in the person detail screen's "Liquidaciones" tab: only shows settlements already prepared. */
+@Component
+@Scope("prototype")
 public class PersonSettlementsTabController {
 
     private static final DateTimeFormatter PREPARED_AT_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
@@ -41,12 +38,14 @@ public class PersonSettlementsTabController {
     @FXML
     private TableColumn<Settlement, String> preparedAtColumn;
 
-    private final SettlementService settlementService = new SettlementServiceImpl(
-            new JdbcSettlementRepository(), new JdbcSavingRepository(), new JdbcPersonRepository(),
-            new AppSettingsServiceImpl(new JdbcAppSettingsRepository()));
+    private final SettlementService settlementService;
 
     private Person person;
     private Consumer<Integer> onYearSelected;
+
+    public PersonSettlementsTabController(SettlementService settlementService) {
+        this.settlementService = settlementService;
+    }
 
     @FXML
     private void initialize() {

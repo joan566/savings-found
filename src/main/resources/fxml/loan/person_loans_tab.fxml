@@ -11,7 +11,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.playground.fondoahorro.presentation.loan.controller.PersonLoansTabController"
-      spacing="12" style="-fx-padding: 16;">
+spacing="10" styleClass="person-tab-content">
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Pane HBox.hgrow="ALWAYS"/>
         <Button text="+ Nuevo préstamo" onAction="#handleNewLoan" styleClass="primary-button"/>

@@ -8,8 +8,6 @@ import com.playground.fondoahorro.domain.enums.PaymentMethod;
 import com.playground.fondoahorro.domain.vo.LoanListItem;
 import com.playground.fondoahorro.domain.vo.Money;
 
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -30,15 +28,7 @@ public interface LoanService {
     Loan createLoan(long personId, Money principalAmount, int interestRateBps, LocalDate loanDate,
                      PaymentMethod paymentMethod, String notes);
 
-    /** Same as createLoan(...), but runs on a caller-supplied connection — used by the Excel importer to replay historical loans inside one shared transaction. */
-    Loan createLoan(Connection connection, long personId, Money principalAmount, int interestRateBps, LocalDate loanDate,
-                     PaymentMethod paymentMethod, String notes) throws SQLException;
-
     LoanPayment registerPayment(long loanId, Money amount, LocalDate paymentDate, PaymentMethod method, String notes);
-
-    /** Same as registerPayment(...), but runs on a caller-supplied connection — used by the Excel importer to replay historical payments inside one shared transaction. */
-    LoanPayment registerPayment(Connection connection, long loanId, Money amount, LocalDate paymentDate,
-                                 PaymentMethod method, String notes) throws SQLException;
 
     Optional<Loan> findById(long id);
 

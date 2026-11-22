@@ -1,0 +1,215 @@
+/* ============================================
+   CONFIGURACIÓN GENERAL
+   ============================================ */
+
+.loan-page,
+.loan-detail-page {
+    -fx-spacing: 16;
+}
+
+/* ============================================
+   ENCABEZADO DEL PRÉSTAMO
+   ============================================ */
+
+.loan-page-header {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 16;
+    -fx-border-color: #E3EAF3;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 18 20;
+    -fx-effect: dropshadow(gaussian, rgba(28, 54, 91, 0.06), 12, 0, 0, 2);
+}
+
+/* ============================================
+   MÉTRICAS Y RESUMEN FINANCIERO
+   ============================================ */
+
+.loan-metrics {
+    -fx-spacing: 12;
+    -fx-alignment: center-left;
+}
+
+.loan-summary {
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.loan-summary-panel {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 16;
+    -fx-border-color: #E3EAF3;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 18;
+    -fx-effect: dropshadow(gaussian, rgba(28, 54, 91, 0.06), 12, 0, 0, 2);
+}
+
+.loan-summary-card {
+    -fx-min-width: 155px;
+    -fx-pref-width: 170px;
+    -fx-padding: 14;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(28, 54, 91, 0.06), 12, 0, 0, 2);
+}
+
+.loan-detail-metric-card {
+    -fx-min-width: 0;
+}
+
+.loan-summary-principal {
+    -fx-background-color: #EEF4FF;
+    -fx-border-color: #DFE9FC;
+}
+
+.loan-summary-rate {
+    -fx-background-color: #F3EFFF;
+    -fx-border-color: #E8DEFF;
+}
+
+.loan-summary-balance {
+    -fx-background-color: #FFF2E8;
+    -fx-border-color: #FFE5D2;
+}
+
+.loan-summary-interest {
+    -fx-background-color: #FEF2F2;
+    -fx-border-color: #FECACA;
+}
+
+.loan-summary-paid {
+    -fx-background-color: #EAF8F2;
+    -fx-border-color: #D8F0E6;
+}
+
+/* ============================================
+   ICONOS DE MÉTRICAS
+   ============================================ */
+
+.loan-metric-icon {
+    -fx-min-width: 34px;
+    -fx-min-height: 34px;
+    -fx-pref-width: 34px;
+    -fx-pref-height: 34px;
+    -fx-max-width: 34px;
+    -fx-max-height: 34px;
+    -fx-alignment: center;
+    -fx-background-radius: 10;
+    -fx-padding: 8;
+}
+
+.loan-icon-blue {
+    -fx-background-color: #DCE9FF;
+}
+
+.loan-icon-purple {
+    -fx-background-color: #E8DEFF;
+}
+
+.loan-icon-orange {
+    -fx-background-color: #FFE5D2;
+}
+
+.loan-icon-red {
+    -fx-background-color: #FEE2E2;
+}
+
+.loan-icon-green {
+    -fx-background-color: #D7F3E8;
+}
+
+.loan-metric-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #46566D;
+}
+
+.loan-metric-value {
+    -fx-font-size: 21px;
+}
+
+/* ============================================
+   INFORMACIÓN COMPLEMENTARIA
+   ============================================ */
+
+.loan-detail-meta {
+    -fx-spacing: 16;
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+
+.loan-meta-card {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 14;
+    -fx-border-color: #E3EAF3;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-padding: 16 18;
+    -fx-effect: dropshadow(gaussian, rgba(28, 54, 91, 0.05), 10, 0, 0, 2);
+}
+
+.loan-meta-card .metric-label {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-secondary;
+}
+
+.loan-meta-value {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+}
+
+/* ============================================
+   HISTORIAL DE MOVIMIENTOS
+   ============================================ */
+
+.loan-history-panel {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 16;
+    -fx-border-color: #E3EAF3;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(28, 54, 91, 0.06), 12, 0, 0, 2);
+}
+
+.loan-history-panel .section-heading {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.loan-history-panel .loan-centered-amount,
+.loan-history-panel .loan-centered-amount .label {
+    -fx-alignment: CENTER;
+}
+
+.section-description {
+    -fx-font-size: 12px;
+    -fx-text-fill: -fx-text-secondary;
+}
+
+/* ============================================
+   FILTROS
+   ============================================ */
+
+.loan-filter-bar {
+    -fx-spacing: 8;
+    -fx-alignment: center-left;
+}
+
+/* ============================================
+   ELEMENTOS GENERALES
+   ============================================ */
+
+.loan-detail-page .section-title {
+    -fx-padding: 4 0 0 0;
+}
+
+.loan-interest-preview {
+    -fx-background-color: #EEF4FF;
+    -fx-border-color: #DDEBFC;
+}

@@ -17,8 +17,12 @@ import javafx.util.StringConverter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.playground.fondoahorro.presentation.birthday.dto.BirthdayGiftInput;
 
+@Component
+@Scope("prototype")
 public class BirthdayGiftFormController {
 
     @FXML

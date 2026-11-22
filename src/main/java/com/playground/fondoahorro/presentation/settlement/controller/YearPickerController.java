@@ -5,7 +5,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 
 import java.time.LocalDate;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 public class YearPickerController {
 
     @FXML

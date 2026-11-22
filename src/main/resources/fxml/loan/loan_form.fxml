@@ -12,7 +12,7 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.playground.fondoahorro.presentation.loan.controller.LoanFormController"
-      spacing="10" prefWidth="360">
+      spacing="10" prefWidth="360" styleClass="app-form">
     <padding>
         <Insets top="16" right="16" bottom="4" left="16"/>
     </padding>
@@ -30,7 +30,7 @@
     <Label text="Observación (opcional)" styleClass="field-label"/>
     <TextField fx:id="notesField"/>
 
-    <VBox styleClass="card" spacing="6">
+    <VBox styleClass="card loan-interest-preview" spacing="6">
         <HBox alignment="CENTER_LEFT" spacing="8">
             <Label text="Interés del primer mes" styleClass="section-title"/>
             <Pane HBox.hgrow="ALWAYS"/>

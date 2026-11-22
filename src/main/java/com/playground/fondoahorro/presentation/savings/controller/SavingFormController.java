@@ -4,7 +4,6 @@ import com.playground.fondoahorro.domain.inputport.PersonService;
 import com.playground.fondoahorro.domain.enums.PaymentMethod;
 import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.domain.entity.Saving;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
 import com.playground.fondoahorro.presentation.shared.Labels;
 import com.playground.fondoahorro.presentation.shared.MoneyFormatter;
 import com.playground.fondoahorro.presentation.shared.MoneyTextFields;
@@ -19,9 +18,12 @@ import javafx.util.StringConverter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.playground.fondoahorro.presentation.savings.dto.SavingInput;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
 
+@Component
+@Scope("prototype")
 public class SavingFormController {
 
     @FXML
@@ -37,7 +39,11 @@ public class SavingFormController {
     @FXML
     private Label errorLabel;
 
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
+    private final PersonService personService;
+
+    public SavingFormController(PersonService personService) {
+        this.personService = personService;
+    }
 
     @FXML
     private void initialize() {

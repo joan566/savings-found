@@ -60,8 +60,12 @@ public final class Dialogs {
     }
 
     public static void error(String message) {
+        error("No fue posible completar la acción", message);
+    }
+
+    public static void error(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
-        alert.setTitle("No fue posible completar la acción");
+        alert.setTitle(title);
         alert.setHeaderText(null);
         alert.setGraphic(null);
         style(alert);
@@ -82,7 +86,7 @@ public final class Dialogs {
     }
 
     private static void style(DialogPane pane) {
-        pane.getStylesheets().add(Dialogs.class.getResource("/css/app.css").toExternalForm());
+        pane.getStylesheets().add(Dialogs.class.getResource("/css/main.css").toExternalForm());
         for (ButtonType buttonType : pane.getButtonTypes()) {
             Button button = (Button) pane.lookupButton(buttonType);
             boolean isPrimaryAction = buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE;

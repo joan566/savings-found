@@ -28,11 +28,12 @@ public final class Toast {
         Node icon = Icons.node(Icons.Icon.CHECK, 14, Color.WHITE);
 
         Label label = new Label(message);
-        label.setStyle("-fx-text-fill: white; -fx-font-size: 13px;");
+        label.getStyleClass().add("toast-message");
 
         HBox content = new HBox(10, icon, label);
         content.setAlignment(Pos.CENTER_LEFT);
-        content.setStyle("-fx-background-color: #166044; -fx-padding: 12 20; -fx-background-radius: 8;");
+        content.getStyleClass().add("toast-content");
+        content.getStylesheets().add(Toast.class.getResource("/css/main.css").toExternalForm());
 
         Popup popup = new Popup();
         popup.getContent().add(content);

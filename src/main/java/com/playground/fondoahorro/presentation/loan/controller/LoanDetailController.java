@@ -2,24 +2,17 @@ package com.playground.fondoahorro.presentation.loan.controller;
 
 import com.playground.fondoahorro.domain.inputport.LoanService;
 import com.playground.fondoahorro.domain.inputport.PersonService;
-import com.playground.fondoahorro.domain.inputport.AppSettingsService;
 import com.playground.fondoahorro.domain.entity.Loan;
 import com.playground.fondoahorro.domain.enums.LoanInterestChargeStatus;
 import com.playground.fondoahorro.domain.enums.LoanStatus;
 import com.playground.fondoahorro.domain.vo.Money;
 import com.playground.fondoahorro.domain.entity.Person;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanInterestChargeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanPaymentRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcAppSettingsRepository;
 import com.playground.fondoahorro.presentation.shared.Badges;
 import com.playground.fondoahorro.presentation.shared.Badges.BadgeStyle;
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
 import com.playground.fondoahorro.presentation.shared.EmptyStates;
+import com.playground.fondoahorro.presentation.shared.Icons;
 import com.playground.fondoahorro.presentation.shared.Icons.Icon;
 import com.playground.fondoahorro.presentation.shared.Labels;
 import com.playground.fondoahorro.presentation.shared.MoneyFormatter;
@@ -34,6 +27,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +35,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.playground.fondoahorro.presentation.loan.dto.LoanTimelineEntry;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
-import com.playground.fondoahorro.application.loan.service.LoanServiceImpl;
-import com.playground.fondoahorro.application.settings.service.AppSettingsServiceImpl;
 
+@Component
+@Scope("prototype")
 public class LoanDetailController {
 
     private static final Logger log = LoggerFactory.getLogger(LoanDetailController.class);
@@ -57,13 +52,23 @@ public class LoanDetailController {
     @FXML
     private Label principalLabel;
     @FXML
+    private Label principalIcon;
+    @FXML
     private Label rateLabel;
+    @FXML
+    private Label rateIcon;
     @FXML
     private Label principalBalanceLabel;
     @FXML
+    private Label balanceIcon;
+    @FXML
     private Label interestOwedLabel;
     @FXML
+    private Label interestIcon;
+    @FXML
     private Label paidLabel;
+    @FXML
+    private Label paidIcon;
     @FXML
     private Label dateLabel;
     @FXML
@@ -91,18 +96,26 @@ public class LoanDetailController {
     @FXML
     private TableColumn<LoanTimelineEntry, String> timelineStatusColumn;
 
-    private final LoanService loanService = new LoanServiceImpl(
-            new JdbcLoanRepository(), new JdbcLoanPaymentRepository(), new JdbcLoanInterestChargeRepository(),
-            new JdbcMovementRepository(), new JdbcMovementTypeRepository(), new JdbcPersonRepository(),
-            new AppSettingsServiceImpl(new JdbcAppSettingsRepository()));
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
+    private final LoanService loanService;
+    private final PersonService personService;
 
     private long loanId;
     private Runnable onBack;
     private List<LoanTimelineEntry> allEntries = List.of();
 
+    public LoanDetailController(LoanService loanService, PersonService personService) {
+        this.loanService = loanService;
+        this.personService = personService;
+    }
+
     @FXML
     private void initialize() {
+        principalIcon.setGraphic(Icons.node(Icon.LOANS, 16, Color.web("#2563EB")));
+        rateIcon.setGraphic(Icons.node(Icon.SETTINGS, 16, Color.web("#7C3AED")));
+        balanceIcon.setGraphic(Icons.node(Icon.SAVINGS, 16, Color.web("#EA580C")));
+        interestIcon.setGraphic(Icons.node(Icon.ARROW_UP, 16, Color.web("#DC2626")));
+        paidIcon.setGraphic(Icons.node(Icon.CHECK, 16, Color.web("#16A34A")));
+
         ToggleGroup group = new ToggleGroup();
         allToggle.setToggleGroup(group);
         paymentsToggle.setToggleGroup(group);

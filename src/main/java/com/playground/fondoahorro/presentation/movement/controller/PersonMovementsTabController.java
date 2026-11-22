@@ -5,9 +5,6 @@ import com.playground.fondoahorro.domain.vo.MovementFilter;
 import com.playground.fondoahorro.domain.enums.MovementKind;
 import com.playground.fondoahorro.domain.vo.MovementListItem;
 import com.playground.fondoahorro.domain.entity.Person;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
 import com.playground.fondoahorro.presentation.shared.Badges;
 import com.playground.fondoahorro.presentation.shared.Badges.BadgeStyle;
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
@@ -27,9 +24,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import com.playground.fondoahorro.application.movement.service.MovementServiceImpl;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 /** Embedded in the person detail screen's "Movimientos" tab, scoped to a single person. Read-only. */
+@Component
+@Scope("prototype")
 public class PersonMovementsTabController {
 
     private static final Color INCOME_ICON_COLOR = Color.web("#16A34A");
@@ -50,8 +50,11 @@ public class PersonMovementsTabController {
     @FXML
     private TableColumn<MovementListItem, MovementListItem> valueColumn;
 
-    private final MovementService movementService = new MovementServiceImpl(
-            new JdbcMovementRepository(), new JdbcMovementTypeRepository(), new JdbcPersonRepository());
+    private final MovementService movementService;
+
+    public PersonMovementsTabController(MovementService movementService) {
+        this.movementService = movementService;
+    }
 
     @FXML
     private void initialize() {

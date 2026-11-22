@@ -1,0 +1,72 @@
+.application-page {
+    -fx-spacing: 18;
+}
+
+.application-page .page-header {
+    -fx-alignment: center-left;
+    -fx-spacing: 12;
+}
+
+.application-page .filter-panel,
+.application-page .section-panel {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 14;
+    -fx-border-color: #E3EAF3;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-padding: 14 16;
+}
+
+.application-page .filter-panel {
+    -fx-spacing: 12;
+}
+
+.application-page .filter-heading {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-secondary;
+}
+
+.application-page .metric-card {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 14;
+    -fx-border-color: #E3EAF3;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-padding: 16 18;
+    -fx-effect: dropshadow(gaussian, rgba(28, 54, 91, 0.06), 12, 0, 0, 2);
+}
+
+.application-page .metric-card .metric-value {
+    -fx-font-size: 22px;
+}
+
+.application-page .metric-card .metric-hero {
+    -fx-font-size: 26px;
+}
+
+.application-page .section-heading {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.application-page .table-view {
+    -fx-background-insets: 0;
+}
+
+.application-page .table-view .placeholder .empty-state-title {
+    -fx-padding: 4 0 0 0;
+}
+
+.app-form {
+    -fx-spacing: 12;
+}
+
+.app-form .section-title {
+    -fx-padding: 0 0 2 0;
+}
+
+.app-form .field-error {
+    -fx-padding: 4 0 0 0;
+}

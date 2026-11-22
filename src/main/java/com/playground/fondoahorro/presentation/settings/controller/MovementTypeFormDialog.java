@@ -3,6 +3,7 @@ package com.playground.fondoahorro.presentation.settings.controller;
 import com.playground.fondoahorro.domain.enums.MovementKind;
 import com.playground.fondoahorro.domain.entity.MovementType;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
+import com.playground.fondoahorro.presentation.shared.SpringFXMLLoader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -25,7 +26,7 @@ public final class MovementTypeFormDialog {
 
     private static Optional<String> show(String title, MovementKind kind, String existingName, String actionText) {
         try {
-            FXMLLoader loader = new FXMLLoader(MovementTypeFormDialog.class.getResource("/fxml/settings/movement_type_form.fxml"));
+            FXMLLoader loader = SpringFXMLLoader.create(MovementTypeFormDialog.class.getResource("/fxml/settings/movement_type_form.fxml"));
             Parent content = loader.load();
             MovementTypeFormController controller = loader.getController();
             controller.setContext(kind, existingName);

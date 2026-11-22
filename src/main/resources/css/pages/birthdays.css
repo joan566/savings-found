@@ -1,0 +1,35 @@
+.birthday-page {
+    -fx-spacing: 16;
+}
+
+.birthday-cards {
+    -fx-hgap: 14;
+    -fx-vgap: 14;
+}
+
+.birthday-card {
+    -fx-min-height: 188px;
+    -fx-border-color: #E3EAF3;
+    -fx-padding: 16;
+}
+
+.birthday-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.birthday-date {
+    -fx-font-size: 14px;
+    -fx-text-fill: -fx-primary;
+}
+
+.birthday-age {
+    -fx-text-fill: -fx-text-secondary;
+}
+
+.birthday-amount {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+}

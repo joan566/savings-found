@@ -1,23 +1,16 @@
 package com.playground.fondoahorro.presentation.loan.controller;
 
 import com.playground.fondoahorro.domain.inputport.LoanService;
-import com.playground.fondoahorro.domain.inputport.AppSettingsService;
 import com.playground.fondoahorro.domain.entity.Loan;
 import com.playground.fondoahorro.domain.vo.LoanListItem;
 import com.playground.fondoahorro.domain.enums.LoanStatus;
 import com.playground.fondoahorro.domain.vo.Money;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanInterestChargeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanPaymentRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcAppSettingsRepository;
 import com.playground.fondoahorro.presentation.shared.Badges;
 import com.playground.fondoahorro.presentation.shared.Badges.BadgeStyle;
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
 import com.playground.fondoahorro.presentation.shared.EmptyStates;
+import com.playground.fondoahorro.presentation.shared.Icons;
 import com.playground.fondoahorro.presentation.shared.Icons.Icon;
 import com.playground.fondoahorro.presentation.shared.MoneyFormatter;
 import com.playground.fondoahorro.presentation.shared.Toast;
@@ -29,13 +22,16 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.function.Consumer;
-import com.playground.fondoahorro.application.loan.service.LoanServiceImpl;
-import com.playground.fondoahorro.application.settings.service.AppSettingsServiceImpl;
 
+@Component
+@Scope("prototype")
 public class LoanListController {
 
     private static final Logger log = LoggerFactory.getLogger(LoanListController.class);
@@ -65,19 +61,30 @@ public class LoanListController {
     @FXML
     private Label loanedMoneyLabel;
     @FXML
+    private Label loanedMoneyIcon;
+    @FXML
     private Label outstandingDebtLabel;
     @FXML
+    private Label outstandingDebtIcon;
+    @FXML
     private Label activeLoanCountLabel;
+    @FXML
+    private Label activeLoanCountIcon;
 
-    private final LoanService loanService = new LoanServiceImpl(
-            new JdbcLoanRepository(), new JdbcLoanPaymentRepository(), new JdbcLoanInterestChargeRepository(),
-            new JdbcMovementRepository(), new JdbcMovementTypeRepository(), new JdbcPersonRepository(),
-            new AppSettingsServiceImpl(new JdbcAppSettingsRepository()));
+    private final LoanService loanService;
 
     private Consumer<Long> onLoanSelected;
 
+    public LoanListController(LoanService loanService) {
+        this.loanService = loanService;
+    }
+
     @FXML
     private void initialize() {
+        loanedMoneyIcon.setGraphic(Icons.node(Icon.LOANS, 16, Color.web("#2563EB")));
+        outstandingDebtIcon.setGraphic(Icons.node(Icon.ARROW_UP, 16, Color.web("#DC2626")));
+        activeLoanCountIcon.setGraphic(Icons.node(Icon.CHECK, 16, Color.web("#16A34A")));
+
         ToggleGroup group = new ToggleGroup();
         activeToggle.setToggleGroup(group);
         paidToggle.setToggleGroup(group);

@@ -2,18 +2,10 @@ package com.playground.fondoahorro.presentation.loan.controller;
 
 import com.playground.fondoahorro.domain.inputport.LoanService;
 import com.playground.fondoahorro.domain.inputport.PersonService;
-import com.playground.fondoahorro.domain.inputport.AppSettingsService;
 import com.playground.fondoahorro.domain.entity.Loan;
 import com.playground.fondoahorro.domain.vo.Money;
 import com.playground.fondoahorro.domain.enums.PaymentMethod;
 import com.playground.fondoahorro.domain.entity.Person;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanInterestChargeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanPaymentRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcAppSettingsRepository;
 import com.playground.fondoahorro.presentation.shared.Labels;
 import com.playground.fondoahorro.presentation.shared.MoneyFormatter;
 import com.playground.fondoahorro.presentation.shared.MoneyTextFields;
@@ -29,11 +21,12 @@ import javafx.util.StringConverter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.playground.fondoahorro.presentation.loan.dto.LoanInput;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
-import com.playground.fondoahorro.application.loan.service.LoanServiceImpl;
-import com.playground.fondoahorro.application.settings.service.AppSettingsServiceImpl;
 
+@Component
+@Scope("prototype")
 public class LoanFormController {
 
     @FXML
@@ -53,11 +46,13 @@ public class LoanFormController {
     @FXML
     private Label errorLabel;
 
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
-    private final LoanService loanService = new LoanServiceImpl(
-            new JdbcLoanRepository(), new JdbcLoanPaymentRepository(), new JdbcLoanInterestChargeRepository(),
-            new JdbcMovementRepository(), new JdbcMovementTypeRepository(), new JdbcPersonRepository(),
-            new AppSettingsServiceImpl(new JdbcAppSettingsRepository()));
+    private final PersonService personService;
+    private final LoanService loanService;
+
+    public LoanFormController(PersonService personService, LoanService loanService) {
+        this.personService = personService;
+        this.loanService = loanService;
+    }
 
     @FXML
     private void initialize() {

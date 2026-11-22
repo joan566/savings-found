@@ -9,13 +9,14 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.playground.fondoahorro.presentation.birthday.controller.BirthdayListController"
-      spacing="16">
-    <VBox spacing="2">
+spacing="16"
+styleClass="application-page birthday-page">
+    <VBox spacing="2" styleClass="page-header">
         <Label text="Cumpleaños" styleClass="page-title"/>
         <Label text="Consulta los próximos cumpleaños y registra los regalos." styleClass="page-subtitle"/>
     </VBox>
     <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;">
-        <FlowPane fx:id="cardsContainer" hgap="16" vgap="16">
+        <FlowPane fx:id="cardsContainer" hgap="16" vgap="16" styleClass="birthday-cards">
             <padding>
                 <Insets top="4" right="4" bottom="4" left="4"/>
             </padding>

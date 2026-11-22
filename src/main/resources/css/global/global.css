@@ -1,0 +1,69 @@
+.root {
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.page-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.page-subtitle {
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-secondary;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: 600;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.metric-hero {
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.metric-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-text-primary;
+}
+
+.metric-label {
+    -fx-font-size: 11px;
+    -fx-text-fill: -fx-text-muted;
+    -fx-font-weight: 600;
+}
+
+.text-secondary {
+    -fx-font-size: 13px;
+    -fx-text-fill: -fx-text-secondary;
+}
+
+.value-income {
+    -fx-text-fill: -fx-success;
+}
+
+.value-expense {
+    -fx-text-fill: -fx-danger;
+}
+
+.value-alert {
+    -fx-text-fill: -fx-warning;
+}
+
+.icon {
+    -fx-fill: -fx-text-secondary;
+}
+
+.icon-muted {
+    -fx-fill: -fx-text-muted;
+}
+
+.icon-on-primary {
+    -fx-fill: white;
+}

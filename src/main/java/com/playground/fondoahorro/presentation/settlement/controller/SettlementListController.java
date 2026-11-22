@@ -1,13 +1,8 @@
 package com.playground.fondoahorro.presentation.settlement.controller;
 
-import com.playground.fondoahorro.domain.inputport.AppSettingsService;
 import com.playground.fondoahorro.domain.inputport.SettlementService;
 import com.playground.fondoahorro.domain.vo.Money;
 import com.playground.fondoahorro.domain.vo.SettlementRow;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSavingRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcAppSettingsRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSettlementRepository;
 import com.playground.fondoahorro.presentation.shared.Badges;
 import com.playground.fondoahorro.presentation.shared.Badges.BadgeStyle;
 import com.playground.fondoahorro.presentation.shared.EmptyStates;
@@ -24,9 +19,11 @@ import javafx.scene.control.TableView;
 
 import java.time.LocalDate;
 import java.util.function.BiConsumer;
-import com.playground.fondoahorro.application.settings.service.AppSettingsServiceImpl;
-import com.playground.fondoahorro.application.settlement.service.SettlementServiceImpl;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 public class SettlementListController {
 
     @FXML
@@ -46,11 +43,13 @@ public class SettlementListController {
     @FXML
     private Label yearTotalLabel;
 
-    private final SettlementService settlementService = new SettlementServiceImpl(
-            new JdbcSettlementRepository(), new JdbcSavingRepository(), new JdbcPersonRepository(),
-            new AppSettingsServiceImpl(new JdbcAppSettingsRepository()));
+    private final SettlementService settlementService;
 
     private BiConsumer<Long, Integer> onPersonSelected;
+
+    public SettlementListController(SettlementService settlementService) {
+        this.settlementService = settlementService;
+    }
 
     @FXML
     private void initialize() {

@@ -1,14 +1,9 @@
 package com.playground.fondoahorro.presentation.settlement.controller;
 
 import com.playground.fondoahorro.domain.inputport.PersonService;
-import com.playground.fondoahorro.domain.inputport.AppSettingsService;
 import com.playground.fondoahorro.domain.inputport.SettlementService;
 import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.domain.entity.Settlement;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSavingRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcAppSettingsRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSettlementRepository;
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
 import com.playground.fondoahorro.presentation.shared.MoneyFormatter;
@@ -20,10 +15,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.format.DateTimeFormatter;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
-import com.playground.fondoahorro.application.settings.service.AppSettingsServiceImpl;
-import com.playground.fondoahorro.application.settlement.service.SettlementServiceImpl;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 public class SettlementDetailController {
 
     private static final Logger log = LoggerFactory.getLogger(SettlementDetailController.class);
@@ -44,14 +40,17 @@ public class SettlementDetailController {
     @FXML
     private Label totalLabel;
 
-    private final SettlementService settlementService = new SettlementServiceImpl(
-            new JdbcSettlementRepository(), new JdbcSavingRepository(), new JdbcPersonRepository(),
-            new AppSettingsServiceImpl(new JdbcAppSettingsRepository()));
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
+    private final SettlementService settlementService;
+    private final PersonService personService;
 
     private long personId;
     private int year;
     private Runnable onBack;
+
+    public SettlementDetailController(SettlementService settlementService, PersonService personService) {
+        this.settlementService = settlementService;
+        this.personService = personService;
+    }
 
     public void setContext(long personId, int year) {
         this.personId = personId;

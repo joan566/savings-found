@@ -2,6 +2,7 @@ package com.playground.fondoahorro.presentation.person.controller;
 
 import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
+import com.playground.fondoahorro.presentation.shared.SpringFXMLLoader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -25,7 +26,7 @@ public final class PersonFormDialog {
 
     private static Optional<PersonInput> show(String title, Person existing, String actionText) {
         try {
-            FXMLLoader loader = new FXMLLoader(PersonFormDialog.class.getResource("/fxml/person/person_form.fxml"));
+            FXMLLoader loader = SpringFXMLLoader.create(PersonFormDialog.class.getResource("/fxml/person/person_form.fxml"));
             Parent content = loader.load();
             PersonFormController controller = loader.getController();
             if (existing != null) {

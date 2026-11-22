@@ -7,8 +7,6 @@ import com.playground.fondoahorro.domain.enums.MovementKind;
 import com.playground.fondoahorro.domain.entity.MovementType;
 import com.playground.fondoahorro.domain.enums.PaymentMethod;
 import com.playground.fondoahorro.domain.entity.Person;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
 import com.playground.fondoahorro.presentation.shared.Labels;
 import com.playground.fondoahorro.presentation.shared.MoneyFormatter;
 import com.playground.fondoahorro.presentation.shared.MoneyTextFields;
@@ -25,10 +23,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.playground.fondoahorro.presentation.movement.dto.MovementInput;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
-import com.playground.fondoahorro.application.movement.service.MovementTypeServiceImpl;
 
+@Component
+@Scope("prototype")
 public class MovementFormController {
 
     @FXML
@@ -50,10 +50,15 @@ public class MovementFormController {
     @FXML
     private Label errorLabel;
 
-    private final MovementTypeService movementTypeService = new MovementTypeServiceImpl(new JdbcMovementTypeRepository());
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
+    private final MovementTypeService movementTypeService;
+    private final PersonService personService;
 
     private MovementKind kind;
+
+    public MovementFormController(MovementTypeService movementTypeService, PersonService personService) {
+        this.movementTypeService = movementTypeService;
+        this.personService = personService;
+    }
 
     @FXML
     private void initialize() {

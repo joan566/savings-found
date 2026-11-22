@@ -3,7 +3,7 @@ package com.playground.fondoahorro.presentation.person.controller;
 import com.playground.fondoahorro.domain.inputport.PersonService;
 import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.domain.vo.PersonSummary;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
+import com.playground.fondoahorro.presentation.shared.SpringFXMLLoader;
 import com.playground.fondoahorro.presentation.loan.controller.PersonLoansTabController;
 import com.playground.fondoahorro.presentation.movement.controller.PersonMovementsTabController;
 import com.playground.fondoahorro.presentation.savings.controller.PersonSavingsTabController;
@@ -11,6 +11,7 @@ import com.playground.fondoahorro.presentation.settlement.controller.PersonSettl
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
 import com.playground.fondoahorro.presentation.shared.MoneyFormatter;
+import com.playground.fondoahorro.presentation.shared.PersonInitials;
 import com.playground.fondoahorro.presentation.shared.Toast;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,19 +21,24 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.Objects;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
 
+@Component
+@Scope("prototype")
 public class PersonDetailController {
 
     private static final Logger log = LoggerFactory.getLogger(PersonDetailController.class);
 
     @FXML
     private Label nameLabel;
+    @FXML
+    private Label personInitialsLabel;
     @FXML
     private Label statusLabel;
     @FXML
@@ -54,12 +60,16 @@ public class PersonDetailController {
     @FXML
     private StackPane movementsTabContent;
 
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
+    private final PersonService personService;
     private long personId;
     private Runnable onBack;
     private Consumer<Long> onLoanSelected;
     private BiConsumer<Long, Integer> onSettlementYearSelected;
     private PersonMovementsTabController movementsTabController;
+
+    public PersonDetailController(PersonService personService) {
+        this.personService = personService;
+    }
 
     public void setPersonId(long personId) {
         this.personId = personId;
@@ -72,7 +82,7 @@ public class PersonDetailController {
 
     private void loadSavingsTab() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/savings/person_savings_tab.fxml"));
+            FXMLLoader loader = SpringFXMLLoader.create(getClass().getResource("/fxml/savings/person_savings_tab.fxml"));
             Parent view = loader.load();
             PersonSavingsTabController controller = loader.getController();
             controller.setOnChanged(this::load);
@@ -85,7 +95,7 @@ public class PersonDetailController {
 
     private void loadLoansTab() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/loan/person_loans_tab.fxml"));
+            FXMLLoader loader = SpringFXMLLoader.create(getClass().getResource("/fxml/loan/person_loans_tab.fxml"));
             Parent view = loader.load();
             PersonLoansTabController controller = loader.getController();
             controller.setOnChanged(this::load);
@@ -99,7 +109,7 @@ public class PersonDetailController {
 
     private void loadSettlementsTab() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/settlement/person_settlements_tab.fxml"));
+            FXMLLoader loader = SpringFXMLLoader.create(getClass().getResource("/fxml/settlement/person_settlements_tab.fxml"));
             Parent view = loader.load();
             PersonSettlementsTabController controller = loader.getController();
             controller.setOnYearSelected(year -> {
@@ -116,7 +126,7 @@ public class PersonDetailController {
 
     private void loadMovementsTab() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/movement/person_movements_tab.fxml"));
+            FXMLLoader loader = SpringFXMLLoader.create(getClass().getResource("/fxml/movement/person_movements_tab.fxml"));
             Parent view = loader.load();
             movementsTabController = loader.getController();
             movementsTabController.setPerson(personService.findById(personId).orElseThrow());
@@ -144,13 +154,15 @@ public class PersonDetailController {
         PersonSummary summary = personService.getSummary(personId);
 
         nameLabel.setText(person.name());
+        personInitialsLabel.setText(PersonInitials.fromName(person.name()));
         statusLabel.setText(person.active() ? "Activa" : "Inactiva");
-        statusLabel.getStyleClass().setAll(person.active() ? "value-income" : "value-expense");
+        statusLabel.getStyleClass().setAll("badge", person.active() ? "badge-success" : "badge-neutral");
         birthDateLabel.setText(DateFormatter.format(person.birthDate()));
         phoneLabel.setText(Objects.requireNonNullElse(person.phone(), "—"));
         savingsValueLabel.setText(MoneyFormatter.format(summary.totalSavings()));
         debtValueLabel.setText(MoneyFormatter.format(summary.outstandingDebt()));
         toggleActiveButton.setText(person.active() ? "Desactivar" : "Activar");
+        toggleActiveButton.getStyleClass().setAll(person.active() ? "danger-button" : "primary-button");
 
         if (movementsTabController != null) {
             movementsTabController.setPerson(person);

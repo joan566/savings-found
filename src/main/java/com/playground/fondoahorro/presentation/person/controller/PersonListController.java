@@ -2,7 +2,6 @@ package com.playground.fondoahorro.presentation.person.controller;
 
 import com.playground.fondoahorro.domain.inputport.PersonService;
 import com.playground.fondoahorro.domain.vo.PersonSummary;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
 import com.playground.fondoahorro.presentation.shared.Badges;
 import com.playground.fondoahorro.presentation.shared.Badges.BadgeStyle;
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
@@ -10,24 +9,31 @@ import com.playground.fondoahorro.presentation.shared.Dialogs;
 import com.playground.fondoahorro.presentation.shared.EmptyStates;
 import com.playground.fondoahorro.presentation.shared.Icons.Icon;
 import com.playground.fondoahorro.presentation.shared.MoneyFormatter;
+import com.playground.fondoahorro.presentation.shared.PersonInitials;
 import com.playground.fondoahorro.presentation.shared.Toast;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
 
+@Component
+@Scope("prototype")
 public class PersonListController {
 
     private static final Logger log = LoggerFactory.getLogger(PersonListController.class);
@@ -36,6 +42,8 @@ public class PersonListController {
     private TextField searchField;
     @FXML
     private CheckBox includeInactiveCheckBox;
+    @FXML
+    private Label resultCountLabel;
     @FXML
     private TableView<PersonSummary> table;
     @FXML
@@ -51,12 +59,41 @@ public class PersonListController {
     @FXML
     private TableColumn<PersonSummary, String> statusColumn;
 
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
+    private final PersonService personService;
     private Consumer<Long> onPersonSelected;
+
+    public PersonListController(PersonService personService) {
+        this.personService = personService;
+    }
 
     @FXML
     private void initialize() {
         nameColumn.setCellValueFactory(data -> new ReadOnlyStringWrapper(data.getValue().person().name()));
+        nameColumn.setCellFactory(column -> new TableCell<>() {
+            private final Label initialsLabel = new Label();
+            private final Label nameLabel = new Label();
+            private final HBox content = new HBox(10, initialsLabel, nameLabel);
+
+            {
+                content.setAlignment(Pos.CENTER_LEFT);
+                initialsLabel.getStyleClass().add("person-avatar");
+                nameLabel.getStyleClass().add("person-name");
+            }
+
+            @Override
+            protected void updateItem(String name, boolean empty) {
+                super.updateItem(name, empty);
+                if (empty || name == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(null);
+                    initialsLabel.setText(PersonInitials.fromName(name));
+                    nameLabel.setText(name);
+                    setGraphic(content);
+                }
+            }
+        });
         birthDateColumn.setCellValueFactory(data ->
                 new ReadOnlyStringWrapper(DateFormatter.format(data.getValue().person().birthDate())));
         phoneColumn.setCellValueFactory(data ->
@@ -94,6 +131,7 @@ public class PersonListController {
     public void refresh() {
         List<PersonSummary> results = personService.listWithSummary(searchField.getText(), includeInactiveCheckBox.isSelected());
         table.setItems(FXCollections.observableArrayList(results));
+        resultCountLabel.setText(results.size() + (results.size() == 1 ? " persona" : " personas"));
     }
 
     @FXML

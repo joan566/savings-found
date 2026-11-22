@@ -11,9 +11,6 @@ import com.playground.fondoahorro.domain.vo.MovementListItem;
 import com.playground.fondoahorro.domain.entity.MovementType;
 import com.playground.fondoahorro.domain.enums.PaymentMethod;
 import com.playground.fondoahorro.domain.entity.Person;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
 import com.playground.fondoahorro.presentation.shared.Badges;
 import com.playground.fondoahorro.presentation.shared.Badges.BadgeStyle;
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
@@ -39,14 +36,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
-import com.playground.fondoahorro.application.movement.service.MovementTypeServiceImpl;
-import com.playground.fondoahorro.application.movement.service.MovementServiceImpl;
 
+@Component
+@Scope("prototype")
 public class MovementListController {
 
     private static final Logger log = LoggerFactory.getLogger(MovementListController.class);
@@ -85,10 +83,16 @@ public class MovementListController {
     @FXML
     private TableColumn<MovementListItem, MovementListItem> valueColumn;
 
-    private final MovementService movementService = new MovementServiceImpl(
-            new JdbcMovementRepository(), new JdbcMovementTypeRepository(), new JdbcPersonRepository());
-    private final MovementTypeService movementTypeService = new MovementTypeServiceImpl(new JdbcMovementTypeRepository());
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
+    private final MovementService movementService;
+    private final MovementTypeService movementTypeService;
+    private final PersonService personService;
+
+    public MovementListController(MovementService movementService, MovementTypeService movementTypeService,
+                                  PersonService personService) {
+        this.movementService = movementService;
+        this.movementTypeService = movementTypeService;
+        this.personService = personService;
+    }
 
     @FXML
     private void initialize() {

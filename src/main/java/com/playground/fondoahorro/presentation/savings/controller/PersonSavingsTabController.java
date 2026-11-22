@@ -4,10 +4,6 @@ import com.playground.fondoahorro.domain.inputport.SavingService;
 import com.playground.fondoahorro.domain.vo.Money;
 import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.domain.entity.Saving;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSavingRepository;
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
 import com.playground.fondoahorro.presentation.shared.EmptyStates;
@@ -23,11 +19,14 @@ import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.Objects;
-import com.playground.fondoahorro.application.savings.service.SavingServiceImpl;
 
 /** Embedded in the person detail screen's "Ahorros" tab, scoped to a single person. */
+@Component
+@Scope("prototype")
 public class PersonSavingsTabController {
 
     private static final Logger log = LoggerFactory.getLogger(PersonSavingsTabController.class);
@@ -43,11 +42,14 @@ public class PersonSavingsTabController {
     @FXML
     private TableColumn<Saving, String> notesColumn;
 
-    private final SavingService savingService = new SavingServiceImpl(
-            new JdbcSavingRepository(), new JdbcMovementRepository(), new JdbcMovementTypeRepository(), new JdbcPersonRepository());
+    private final SavingService savingService;
 
     private Person person;
     private Runnable onChanged;
+
+    public PersonSavingsTabController(SavingService savingService) {
+        this.savingService = savingService;
+    }
 
     @FXML
     private void initialize() {

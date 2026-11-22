@@ -13,7 +13,7 @@ import com.playground.fondoahorro.domain.entity.MovementType;
 import com.playground.fondoahorro.domain.outputport.MovementTypeRepository;
 import com.playground.fondoahorro.domain.enums.PaymentMethod;
 import com.playground.fondoahorro.domain.outputport.PersonRepository;
-import com.playground.fondoahorro.infrastructure.transaction.TransactionRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -44,6 +44,7 @@ public class MovementServiceImpl implements MovementService {
      * manual counterpart to the automatic flows in SavingService/BirthdayGiftService/LoanService,
      * which each hardcode their own system type and can't be reused for arbitrary categories.
      */
+    @Transactional
     public Movement registerMovement(long movementTypeId, Fund fund, PaymentMethod method, Money amount,
                                       LocalDate date, Long personId, String notes) {
         MovementType type = movementTypeRepository.findById(movementTypeId)
@@ -60,18 +61,16 @@ public class MovementServiceImpl implements MovementService {
                     .orElseThrow(() -> new IllegalArgumentException("La persona no existe."));
         }
 
-        return TransactionRunner.run(connection -> {
-            if (type.kind() == MovementKind.EXPENSE) {
-                FundBalances balances = repository.getBalances(connection);
-                if (!balances.hasSufficientBalance(fund, method, amount)) {
-                    throw new IllegalArgumentException(
-                            "El " + fundName(fund) + " no tiene saldo suficiente para registrar este movimiento.");
-                }
+        if (type.kind() == MovementKind.EXPENSE) {
+            FundBalances balances = repository.getBalances();
+            if (!balances.hasSufficientBalance(fund, method, amount)) {
+                throw new IllegalArgumentException(
+                        "El " + fundName(fund) + " no tiene saldo suficiente para registrar este movimiento.");
             }
-            Movement movement = Movement.create(type.id(), fund, method, type.kind(), amount, date, personId,
-                    null, null, notes);
-            return repository.insert(connection, movement);
-        });
+        }
+        Movement movement = Movement.create(type.id(), fund, method, type.kind(), amount, date, personId,
+                null, null, notes);
+        return repository.insert(movement);
     }
 
     private static String fundName(Fund fund) {

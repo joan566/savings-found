@@ -1,20 +1,28 @@
 package com.playground.fondoahorro.application.dashboard.service;
 
 import com.playground.fondoahorro.domain.inputport.BirthdayGiftService;
+import com.playground.fondoahorro.domain.inputport.DashboardService;
 import com.playground.fondoahorro.domain.inputport.LoanService;
 import com.playground.fondoahorro.domain.inputport.MovementService;
 import com.playground.fondoahorro.domain.inputport.PersonService;
-import com.playground.fondoahorro.domain.inputport.DashboardService;
-import com.playground.fondoahorro.domain.vo.UpcomingBirthday;
-import com.playground.fondoahorro.domain.vo.DashboardSnapshot;
 import com.playground.fondoahorro.domain.entity.Loan;
+import com.playground.fondoahorro.domain.entity.Movement;
+import com.playground.fondoahorro.domain.enums.DashboardPeriod;
 import com.playground.fondoahorro.domain.enums.LoanStatus;
-import com.playground.fondoahorro.domain.vo.Money;
+import com.playground.fondoahorro.domain.enums.MovementKind;
+import com.playground.fondoahorro.domain.vo.DashboardSnapshot;
 import com.playground.fondoahorro.domain.vo.FundBalances;
+import com.playground.fondoahorro.domain.vo.Money;
+import com.playground.fondoahorro.domain.vo.MonthlyFundContributions;
 import com.playground.fondoahorro.domain.vo.MovementFilter;
 import com.playground.fondoahorro.domain.vo.MovementListItem;
+import com.playground.fondoahorro.domain.vo.UpcomingBirthday;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DashboardServiceImpl implements DashboardService {
 
@@ -34,7 +42,7 @@ public class DashboardServiceImpl implements DashboardService {
         this.birthdayGiftService = birthdayGiftService;
     }
 
-    public DashboardSnapshot getSnapshot() {
+    public DashboardSnapshot getSnapshot(DashboardPeriod period) {
         FundBalances balances = movementService.getBalances();
 
         List<Loan> activeLoans = loanService.list(LoanStatus.ACTIVE, null).stream()
@@ -53,7 +61,39 @@ public class DashboardServiceImpl implements DashboardService {
                 .limit(RECENT_ACTIVITY_LIMIT)
                 .toList();
 
+        List<MonthlyFundContributions> monthlyFundContributions = monthlyFundContributions(period, LocalDate.now());
+
         return new DashboardSnapshot(balances, loanedMoney, outstandingDebt, activeLoans.size(),
-                activePersonCount, upcomingBirthdays, recentActivity);
+                activePersonCount, upcomingBirthdays, recentActivity, monthlyFundContributions);
+    }
+
+    private List<MonthlyFundContributions> monthlyFundContributions(DashboardPeriod period, LocalDate today) {
+        LocalDate startDate = period.startDate(today);
+        Map<YearMonth, MonthlyFundContributions> monthly = new LinkedHashMap<>();
+        for (YearMonth month = YearMonth.from(startDate);
+             !month.isAfter(YearMonth.from(today));
+             month = month.plusMonths(1)) {
+            monthly.put(month, new MonthlyFundContributions(month, Money.ZERO, Money.ZERO));
+        }
+
+        MovementFilter filter = new MovementFilter(startDate, today, MovementKind.INCOME,
+                null, null, null, null);
+        for (MovementListItem item : movementService.list(filter)) {
+            Movement movement = item.movement();
+            YearMonth month = YearMonth.from(movement.date());
+            MonthlyFundContributions current = monthly.get(month);
+            if (current == null) {
+                continue;
+            }
+
+            MonthlyFundContributions updated = switch (movement.fund()) {
+                case SAVINGS -> new MonthlyFundContributions(month,
+                        current.savings().plus(movement.amount()), current.birthdays());
+                case BIRTHDAY -> new MonthlyFundContributions(month,
+                        current.savings(), current.birthdays().plus(movement.amount()));
+            };
+            monthly.put(month, updated);
+        }
+        return List.copyOf(monthly.values());
     }
 }

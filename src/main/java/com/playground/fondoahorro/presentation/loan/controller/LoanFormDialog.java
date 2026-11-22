@@ -2,6 +2,7 @@ package com.playground.fondoahorro.presentation.loan.controller;
 
 import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
+import com.playground.fondoahorro.presentation.shared.SpringFXMLLoader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -24,7 +25,7 @@ public final class LoanFormDialog {
 
     private static Optional<LoanInput> show(Person fixedPerson) {
         try {
-            FXMLLoader loader = new FXMLLoader(LoanFormDialog.class.getResource("/fxml/loan/loan_form.fxml"));
+            FXMLLoader loader = SpringFXMLLoader.create(LoanFormDialog.class.getResource("/fxml/loan/loan_form.fxml"));
             Parent content = loader.load();
             LoanFormController controller = loader.getController();
             if (fixedPerson != null) {

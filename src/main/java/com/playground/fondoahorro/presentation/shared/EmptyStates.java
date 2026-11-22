@@ -29,6 +29,7 @@ public final class EmptyStates {
         VBox box = new VBox(6);
         box.setAlignment(Pos.CENTER);
         box.setPadding(new Insets(32));
+        box.getStyleClass().add("empty-state");
 
         Node iconNode = Icons.node(icon, 40, ICON_COLOR);
         VBox.setMargin(iconNode, new Insets(0, 0, 8, 0));

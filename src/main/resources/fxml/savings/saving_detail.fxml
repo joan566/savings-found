@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.playground.fondoahorro.presentation.savings.controller.SavingDetailController"
+      spacing="14"
+      styleClass="application-page saving-detail-page">
+    <HBox alignment="CENTER_LEFT">
+        <Button text="← Volver a ahorros" onAction="#handleBack" styleClass="saving-back-button"/>
+    </HBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="14" styleClass="saving-owner-card">
+        <Label fx:id="personInitialsLabel" styleClass="saving-owner-avatar"/>
+        <VBox spacing="5">
+            <Label text="Ahorro de" styleClass="saving-owner-caption"/>
+            <Label fx:id="personLabel" styleClass="page-title"/>
+        </VBox>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <VBox spacing="4" alignment="CENTER_RIGHT">
+            <Label text="Fecha del ahorro" styleClass="metric-label"/>
+            <Label fx:id="dateLabel" styleClass="saving-meta-value"/>
+        </VBox>
+        <Button fx:id="editButton" text="Editar ahorro" onAction="#handleEdit" styleClass="secondary-button"/>
+    </HBox>
+
+    <HBox spacing="12">
+        <VBox styleClass="saving-amount-card" spacing="8" HBox.hgrow="ALWAYS">
+            <Label text="Monto ahorrado" styleClass="saving-card-caption"/>
+            <Label fx:id="amountLabel" styleClass="saving-amount-value"/>
+        </VBox>
+        <VBox styleClass="saving-method-card" spacing="8" HBox.hgrow="ALWAYS">
+            <Label text="Medio de pago" styleClass="saving-card-caption"/>
+            <Label fx:id="methodLabel" styleClass="saving-method-value"/>
+        </VBox>
+    </HBox>
+
+    <VBox styleClass="saving-notes-card" spacing="6" VBox.vgrow="ALWAYS">
+        <Label text="Observación" styleClass="saving-card-caption"/>
+        <Label fx:id="notesLabel" styleClass="saving-notes-value" wrapText="true"/>
+    </VBox>
+</VBox>

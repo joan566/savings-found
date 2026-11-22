@@ -10,7 +10,8 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.playground.fondoahorro.presentation.settlement.controller.SettlementDetailController"
-      spacing="16">
+      spacing="16"
+      styleClass="application-page settlement-detail-page">
     <HBox spacing="12" alignment="CENTER_LEFT">
         <Button text="← Volver" onAction="#handleBack" styleClass="secondary-button"/>
     </HBox>
@@ -21,7 +22,7 @@
         <Button fx:id="prepareButton" text="Preparar liquidación" onAction="#handlePrepare" styleClass="primary-button"/>
     </HBox>
     <Label fx:id="statusLabel" styleClass="metric-label"/>
-    <VBox styleClass="card" spacing="16">
+    <VBox styleClass="card settlement-detail-card" spacing="16">
         <HBox spacing="16">
             <VBox spacing="6" HBox.hgrow="ALWAYS">
                 <Label text="AHORRO ACUMULADO" styleClass="metric-label"/>

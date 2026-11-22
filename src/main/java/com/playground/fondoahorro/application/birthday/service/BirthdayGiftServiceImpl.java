@@ -16,7 +16,7 @@ import com.playground.fondoahorro.domain.outputport.MovementTypeRepository;
 import com.playground.fondoahorro.domain.enums.PaymentMethod;
 import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.domain.outputport.PersonRepository;
-import com.playground.fondoahorro.infrastructure.transaction.TransactionRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.MonthDay;
@@ -82,6 +82,7 @@ public class BirthdayGiftServiceImpl implements BirthdayGiftService {
         return candidate;
     }
 
+    @Transactional
     public BirthdayGift registerGift(long personId, LocalDate giftDate, Money amount, PaymentMethod method, String notes) {
         personRepository.findById(personId)
                 .orElseThrow(() -> new IllegalArgumentException("La persona no existe."));
@@ -96,17 +97,15 @@ public class BirthdayGiftServiceImpl implements BirthdayGiftService {
 
         BirthdayGift gift = BirthdayGift.create(personId, giftDate, amount, method, notes);
 
-        return TransactionRunner.run(connection -> {
-            FundBalances balances = movementRepository.getBalances(connection);
-            if (!balances.hasSufficientBalance(Fund.BIRTHDAY, method, amount)) {
-                throw new IllegalArgumentException(
-                        "El fondo de cumpleaños no tiene saldo suficiente para registrar este regalo.");
-            }
-            BirthdayGift inserted = giftRepository.insert(connection, gift);
-            Movement movement = Movement.create(type.id(), Fund.BIRTHDAY, method, MovementKind.EXPENSE,
-                    amount, giftDate, personId, "birthday_gifts", inserted.id(), notes);
-            movementRepository.insert(connection, movement);
-            return inserted;
-        });
+        FundBalances balances = movementRepository.getBalances();
+        if (!balances.hasSufficientBalance(Fund.BIRTHDAY, method, amount)) {
+            throw new IllegalArgumentException(
+                    "El fondo de cumpleaños no tiene saldo suficiente para registrar este regalo.");
+        }
+        BirthdayGift inserted = giftRepository.insert(gift);
+        Movement movement = Movement.create(type.id(), Fund.BIRTHDAY, method, MovementKind.EXPENSE,
+                amount, giftDate, personId, "birthday_gifts", inserted.id(), notes);
+        movementRepository.insert(movement);
+        return inserted;
     }
 }

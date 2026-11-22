@@ -3,6 +3,7 @@ package com.playground.fondoahorro.presentation.savings.controller;
 import com.playground.fondoahorro.domain.entity.Person;
 import com.playground.fondoahorro.domain.entity.Saving;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
+import com.playground.fondoahorro.presentation.shared.SpringFXMLLoader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
@@ -30,7 +31,7 @@ public final class SavingFormDialog {
 
     private static Optional<SavingInput> show(Person fixedPerson, Saving existingSaving) {
         try {
-            FXMLLoader loader = new FXMLLoader(SavingFormDialog.class.getResource("/fxml/savings/saving_form.fxml"));
+            FXMLLoader loader = SpringFXMLLoader.create(SavingFormDialog.class.getResource("/fxml/savings/saving_form.fxml"));
             Parent content = loader.load();
             SavingFormController controller = loader.getController();
             if (fixedPerson != null) {

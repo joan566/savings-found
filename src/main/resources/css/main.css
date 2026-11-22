@@ -1,0 +1,13 @@
+@import "themes/default.css";
+@import "global/global.css";
+@import "components/components.css";
+@import "layout/layout.css";
+@import "pages/dashboard.css";
+@import "pages/application.css";
+@import "pages/person.css";
+@import "pages/savings.css";
+@import "pages/loans.css";
+@import "pages/movements.css";
+@import "pages/birthdays.css";
+@import "pages/settlements.css";
+@import "pages/settings.css";

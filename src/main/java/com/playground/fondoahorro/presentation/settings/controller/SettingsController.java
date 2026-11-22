@@ -16,15 +16,7 @@ import com.playground.fondoahorro.domain.inputport.AppSettingsService;
 import com.playground.fondoahorro.domain.vo.Money;
 import com.playground.fondoahorro.domain.enums.MovementKind;
 import com.playground.fondoahorro.domain.entity.MovementType;
-import com.playground.fondoahorro.infrastructure.adapter.DatabaseBackup;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanInterestChargeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanPaymentRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcLoanRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcSavingRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcAppSettingsRepository;
+import com.playground.fondoahorro.infrastructure.adapters.DatabaseBackup;
 import com.playground.fondoahorro.presentation.shared.Badges;
 import com.playground.fondoahorro.presentation.shared.Badges.BadgeStyle;
 import com.playground.fondoahorro.presentation.shared.Dialogs;
@@ -42,7 +34,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -62,13 +53,11 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-import com.playground.fondoahorro.application.person.service.PersonServiceImpl;
-import com.playground.fondoahorro.application.loan.service.LoanServiceImpl;
-import com.playground.fondoahorro.application.movement.service.MovementTypeServiceImpl;
-import com.playground.fondoahorro.application.savings.service.SavingServiceImpl;
-import com.playground.fondoahorro.application.settings.service.AppSettingsServiceImpl;
-import com.playground.fondoahorro.application.importing.service.ImportServiceImpl;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 public class SettingsController {
 
     private static final Logger log = LoggerFactory.getLogger(SettingsController.class);
@@ -101,15 +90,25 @@ public class SettingsController {
     @FXML
     private TextField settlementInterestField;
 
-    private final MovementTypeService movementTypeService = new MovementTypeServiceImpl(new JdbcMovementTypeRepository());
-    private final AppSettingsService appSettingsService = new AppSettingsServiceImpl(new JdbcAppSettingsRepository());
-    private final PersonService personService = new PersonServiceImpl(new JdbcPersonRepository());
-    private final SavingService savingService = new SavingServiceImpl(new JdbcSavingRepository(), new JdbcMovementRepository(),
-            new JdbcMovementTypeRepository(), new JdbcPersonRepository());
-    private final LoanService loanService = new LoanServiceImpl(new JdbcLoanRepository(), new JdbcLoanPaymentRepository(),
-            new JdbcLoanInterestChargeRepository(), new JdbcMovementRepository(), new JdbcMovementTypeRepository(),
-            new JdbcPersonRepository(), appSettingsService);
-    private final ImportService importService = new ImportServiceImpl(personService, savingService, loanService);
+    private final MovementTypeService movementTypeService;
+    private final AppSettingsService appSettingsService;
+    private final PersonService personService;
+    private final SavingService savingService;
+    private final LoanService loanService;
+    private final ImportService importService;
+    private final DatabaseBackup databaseBackup;
+
+    public SettingsController(MovementTypeService movementTypeService, AppSettingsService appSettingsService,
+                              PersonService personService, SavingService savingService, LoanService loanService,
+                              ImportService importService, DatabaseBackup databaseBackup) {
+        this.movementTypeService = movementTypeService;
+        this.appSettingsService = appSettingsService;
+        this.personService = personService;
+        this.savingService = savingService;
+        this.loanService = loanService;
+        this.importService = importService;
+        this.databaseBackup = databaseBackup;
+    }
 
     @FXML
     private void initialize() {
@@ -197,7 +196,7 @@ public class SettingsController {
             return;
         }
         try {
-            DatabaseBackup.copyTo(destination.toPath());
+            databaseBackup.copyTo(destination.toPath());
             Dialogs.info("Copia de seguridad creada", "La copia se guardó en:\n" + destination.getAbsolutePath());
         } catch (IOException e) {
             log.error("Error al crear la copia de seguridad", e);
@@ -228,7 +227,7 @@ public class SettingsController {
         }
 
         try {
-            DatabaseBackup.restoreFrom(source.toPath());
+            databaseBackup.restoreFrom(source.toPath());
             Dialogs.info("Copia restaurada",
                     "La copia de seguridad se restauró correctamente. La aplicación se cerrará ahora; ábrela de nuevo para continuar.");
             Platform.exit();

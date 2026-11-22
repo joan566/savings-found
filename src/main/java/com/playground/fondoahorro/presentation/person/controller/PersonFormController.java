@@ -8,8 +8,12 @@ import javafx.scene.control.TextField;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import com.playground.fondoahorro.presentation.person.dto.PersonInput;
 
+@Component
+@Scope("prototype")
 public class PersonFormController {
 
     @FXML

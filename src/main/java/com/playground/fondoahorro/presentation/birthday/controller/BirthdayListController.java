@@ -1,15 +1,9 @@
 package com.playground.fondoahorro.presentation.birthday.controller;
 
 import com.playground.fondoahorro.domain.inputport.BirthdayGiftService;
-import com.playground.fondoahorro.domain.inputport.AppSettingsService;
 import com.playground.fondoahorro.domain.vo.UpcomingBirthday;
 import com.playground.fondoahorro.domain.vo.Money;
 import com.playground.fondoahorro.domain.entity.Person;
-import com.playground.fondoahorro.infrastructure.repository.JdbcBirthdayGiftRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcMovementTypeRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcPersonRepository;
-import com.playground.fondoahorro.infrastructure.repository.JdbcAppSettingsRepository;
 import com.playground.fondoahorro.presentation.shared.Badges;
 import com.playground.fondoahorro.presentation.shared.Badges.BadgeStyle;
 import com.playground.fondoahorro.presentation.shared.DateFormatter;
@@ -25,9 +19,11 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.playground.fondoahorro.application.settings.service.AppSettingsServiceImpl;
-import com.playground.fondoahorro.application.birthday.service.BirthdayGiftServiceImpl;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 public class BirthdayListController {
 
     private static final Logger log = LoggerFactory.getLogger(BirthdayListController.class);
@@ -35,10 +31,11 @@ public class BirthdayListController {
     @FXML
     private FlowPane cardsContainer;
 
-    private final BirthdayGiftService birthdayGiftService = new BirthdayGiftServiceImpl(
-            new JdbcBirthdayGiftRepository(), new JdbcMovementRepository(), new JdbcMovementTypeRepository(),
-            new JdbcPersonRepository(), new AppSettingsServiceImpl(new JdbcAppSettingsRepository()));
+    private final BirthdayGiftService birthdayGiftService;
 
+    public BirthdayListController(BirthdayGiftService birthdayGiftService) {
+        this.birthdayGiftService = birthdayGiftService;
+    }
     @FXML
     private void initialize() {
         refresh();
@@ -59,18 +56,18 @@ public class BirthdayListController {
 
     private VBox buildCard(UpcomingBirthday item) {
         VBox card = new VBox(8);
-        card.getStyleClass().add("card");
+        card.getStyleClass().addAll("card", "birthday-card");
         card.setPrefWidth(230);
 
         Label name = new Label(item.person().name());
-        name.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+        name.getStyleClass().add("birthday-name");
         name.setWrapText(true);
 
         Label date = new Label(DateFormatter.formatDayMonth(item.occurrenceDate()));
-        date.getStyleClass().add("metric-label");
+        date.getStyleClass().addAll("metric-label", "birthday-date");
 
         Label age = new Label("Cumple " + item.turningAge() + " años");
-        age.getStyleClass().add("metric-label");
+        age.getStyleClass().addAll("metric-label", "birthday-age");
 
         Label giftStatus = item.giftGiven()
                 ? Badges.of("Regalo entregado", BadgeStyle.SUCCESS)
@@ -78,7 +75,7 @@ public class BirthdayListController {
 
         Money amountToShow = item.giftGiven() ? item.givenAmount() : birthdayGiftService.defaultGiftAmount();
         Label amountLabel = new Label(MoneyFormatter.format(amountToShow));
-        amountLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+        amountLabel.getStyleClass().add("birthday-amount");
 
         card.getChildren().addAll(name, date, age, giftStatus, amountLabel);
 

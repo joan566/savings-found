@@ -9,6 +9,7 @@ import com.playground.fondoahorro.domain.outputport.SavingRepository;
 import com.playground.fondoahorro.domain.entity.Settlement;
 import com.playground.fondoahorro.domain.outputport.SettlementRepository;
 import com.playground.fondoahorro.domain.vo.SettlementRow;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +53,7 @@ public class SettlementServiceImpl implements SettlementService {
         return rows;
     }
 
+    @Transactional
     public Settlement prepare(long personId, int year) {
         personRepository.findById(personId)
                 .orElseThrow(() -> new IllegalArgumentException("La persona no existe."));

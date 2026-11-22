@@ -12,8 +12,9 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.playground.fondoahorro.presentation.savings.controller.SavingListController"
-      spacing="16">
-    <HBox spacing="12" alignment="CENTER_LEFT">
+spacing="16"
+styleClass="application-page savings-page">
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="page-header">
         <VBox spacing="2">
             <Label text="Ahorros" styleClass="page-title"/>
             <Label text="Consulta y registra los ahorros de cada participante." styleClass="page-subtitle"/>
@@ -21,10 +22,11 @@
         <Pane HBox.hgrow="ALWAYS"/>
         <Button text="+ Registrar ahorro" onAction="#handleNewSaving" styleClass="primary-button"/>
     </HBox>
-    <HBox spacing="10" alignment="CENTER_LEFT">
-        <ComboBox fx:id="personFilterCombo"/>
+    <HBox spacing="12" alignment="CENTER_LEFT" styleClass="filter-panel">
+        <Label text="Filtrar por participante" styleClass="filter-heading"/>
+        <ComboBox fx:id="personFilterCombo" prefWidth="240"/>
     </HBox>
-    <TableView fx:id="table" VBox.vgrow="ALWAYS">
+    <TableView fx:id="table" VBox.vgrow="ALWAYS" styleClass="clickable-table">
         <columnResizePolicy>
             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN"/>
         </columnResizePolicy>

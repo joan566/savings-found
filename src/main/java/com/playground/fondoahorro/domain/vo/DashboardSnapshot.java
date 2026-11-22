@@ -3,6 +3,7 @@ package com.playground.fondoahorro.domain.vo;
 import com.playground.fondoahorro.domain.vo.UpcomingBirthday;
 import com.playground.fondoahorro.domain.vo.Money;
 import com.playground.fondoahorro.domain.vo.FundBalances;
+import com.playground.fondoahorro.domain.vo.MonthlyFundContributions;
 import com.playground.fondoahorro.domain.vo.MovementListItem;
 
 import java.util.List;
@@ -15,5 +16,6 @@ public record DashboardSnapshot(
         int activeLoanCount,
         int activePersonCount,
         List<UpcomingBirthday> upcomingBirthdays,
-        List<MovementListItem> recentActivity) {
+        List<MovementListItem> recentActivity,
+        List<MonthlyFundContributions> monthlyFundContributions) {
 }

@@ -1,0 +1,214 @@
+.person-page,
+.person-detail-page {
+    -fx-spacing: 16;
+}
+
+.person-toolbar {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-color: #E3EAF3;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(28, 54, 91, 0.06), 12, 0, 0, 2);
+}
+
+.person-toolbar {
+    -fx-padding: 10;
+}
+
+.person-search {
+    -fx-background-color: #F7F9FC;
+    -fx-border-color: transparent;
+    -fx-background-radius: 9;
+    -fx-border-radius: 9;
+    -fx-padding: 9 12;
+}
+
+.person-search:focused {
+    -fx-background-color: white;
+    -fx-border-color: #B8CCF2;
+}
+
+.person-count-label {
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #68778D;
+    -fx-padding: 0 6 0 2;
+}
+
+.person-table-card {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-effect: none;
+}
+
+.person-avatar {
+    -fx-min-width: 32px;
+    -fx-min-height: 32px;
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+    -fx-max-width: 32px;
+    -fx-max-height: 32px;
+    -fx-alignment: center;
+    -fx-background-color: #EAF2FF;
+    -fx-background-radius: 16;
+    -fx-text-fill: #315B9A;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.person-name {
+    -fx-text-fill: #25334A;
+    -fx-font-weight: 600;
+}
+
+.person-profile-card {
+    -fx-padding: 14 18;
+}
+
+.person-profile-avatar {
+    -fx-min-width: 52px;
+    -fx-min-height: 52px;
+    -fx-pref-width: 52px;
+    -fx-pref-height: 52px;
+    -fx-max-width: 52px;
+    -fx-max-height: 52px;
+    -fx-alignment: center;
+    -fx-background-color: #EAF2FF;
+    -fx-background-radius: 26;
+    -fx-text-fill: #315B9A;
+    -fx-font-size: 17px;
+    -fx-font-weight: bold;
+}
+
+.person-back-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #68778D;
+    -fx-padding: 4 0;
+    -fx-font-size: 12px;
+    -fx-cursor: hand;
+}
+
+.person-back-button:hover {
+    -fx-text-fill: -fx-dashboard-blue;
+    -fx-underline: true;
+}
+
+.person-detail-page .page-title {
+    -fx-font-size: 22px;
+}
+
+.person-meta-value {
+    -fx-text-fill: #34445C;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.person-savings-card,
+.person-debt-card {
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-padding: 12 16;
+    -fx-min-height: 82px;
+    -fx-effect: dropshadow(gaussian, rgba(28, 54, 91, 0.07), 14, 0, 0, 3);
+}
+
+.person-summary-title {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #68778D;
+}
+
+.person-savings-card {
+    -fx-background-color: #EAF8F2;
+    -fx-border-color: #D8F0E6;
+}
+
+.person-debt-card {
+    -fx-background-color: #FFF5EF;
+    -fx-border-color: #F8E4D7;
+}
+
+.person-savings-value,
+.person-debt-value {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+}
+
+.person-savings-value {
+    -fx-text-fill: -fx-success;
+}
+
+.person-debt-value {
+    -fx-text-fill: -fx-danger;
+}
+
+.person-history-card {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 14;
+    -fx-border-color: #E3EAF3;
+    -fx-border-radius: 14;
+    -fx-border-width: 1;
+    -fx-padding: 8;
+    -fx-effect: dropshadow(gaussian, rgba(28, 54, 91, 0.07), 14, 0, 0, 3);
+}
+
+.person-table .table-row-cell:hover {
+    -fx-cursor: hand;
+}
+
+.person-tab-content {
+    -fx-padding: 10 12 12 12;
+}
+
+.person-detail-tabs {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-tab-min-height: 40px;
+    -fx-tab-max-height: 40px;
+}
+
+.person-detail-tabs .tab-header-area {
+    -fx-padding: 0 10;
+}
+
+.person-detail-tabs .tab-header-background {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent #E3EAF3 transparent;
+}
+
+.person-detail-tabs .tab {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8 8 0 0;
+    -fx-padding: 8 14;
+}
+
+.person-detail-tabs .tab:selected {
+    -fx-background-color: #EAF2FF;
+    -fx-border-color: transparent transparent -fx-dashboard-blue transparent;
+    -fx-border-width: 0 0 2 0;
+}
+
+.person-detail-tabs:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-style: solid;
+    -fx-border-width: 0;
+    -fx-effect: none;
+}
+
+.person-detail-tabs .tab-label {
+    -fx-text-fill: #68778D;
+    -fx-font-weight: 600;
+}
+
+.person-detail-tabs .tab:selected .tab-label {
+    -fx-text-fill: -fx-dashboard-blue;
+}
+
+.person-detail-tabs .tab-content-area {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
